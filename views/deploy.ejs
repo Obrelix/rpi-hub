@@ -1,0 +1,64 @@
+<%- include('layout') %>
+
+<h1 class="page-title">Deploy</h1>
+
+<% if (services.length === 0) { %>
+<div class="card">
+  <p class="text-muted">No services configured. Add services in <a href="/settings">Settings</a>.</p>
+</div>
+<% } %>
+
+<% services.forEach(function(svc) { %>
+<div class="card" id="deploy-card-<%= svc.id %>">
+
+  <div class="card-title"><%= svc.name %></div>
+
+  <% if (svc.deployPath) { %>
+  <p class="service-meta">Path: <code><%= svc.deployPath %></code></p>
+  <% } %>
+
+  <!-- Pull & Restart -->
+  <div class="deploy-section">
+    <button
+      class="btn btn-primary"
+      onclick="gitPull('<%= svc.id %>')"
+      <%= !svc.repo ? 'disabled title="No repository configured"' : '' %>
+    >Pull &amp; Restart</button>
+    <% if (!svc.repo) { %>
+    <span class="text-muted" style="margin-left:.5rem;font-size:.85rem;">No repository configured</span>
+    <% } else { %>
+    <span class="text-muted" style="margin-left:.5rem;font-size:.85rem;"><%= svc.repo %></span>
+    <% } %>
+  </div>
+
+  <!-- Upload drop zone -->
+  <div class="deploy-section">
+    <div
+      class="drop-zone"
+      id="drop-<%= svc.id %>"
+      ondragover="handleDragOver(event, '<%= svc.id %>')"
+      ondragleave="handleDragLeave(event, '<%= svc.id %>')"
+      ondrop="handleDrop(event, '<%= svc.id %>')"
+    >
+      <p>Drag &amp; drop a <code>.zip</code> or <code>.tar.gz</code> archive here</p>
+      <label class="btn btn-secondary btn-sm">
+        Browse file
+        <input
+          type="file"
+          accept=".zip,.tar.gz,.tgz"
+          style="display:none"
+          onchange="handleFileSelect(event, '<%= svc.id %>')"
+        >
+      </label>
+    </div>
+  </div>
+
+  <!-- Deploy log -->
+  <div class="deploy-log-wrap" id="log-wrap-<%= svc.id %>" style="display:none">
+    <div class="deploy-log" id="log-<%= svc.id %>"></div>
+  </div>
+
+</div>
+<% }); %>
+
+<%- include('partials/footer') %>
