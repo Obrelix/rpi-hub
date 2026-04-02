@@ -1,0 +1,180 @@
+const express = require('express');
+const path    = require('path');
+const fs      = require('fs');
+const router  = express.Router();
+
+const CONFIG_PATH = path.join(__dirname, '..', 'config.json');
+
+function loadConfig() {
+  try {
+    return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
+  } catch {
+    return {};
+  }
+}
+
+function saveConfig(data) {
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(data, null, 2));
+}
+
+/* ------------------------------------------------------------------ */
+/*  GET /settings                                                       */
+/* ------------------------------------------------------------------ */
+router.get('/settings', (req, res) => {
+  const registry = req.app.get('registry');
+  const config   = loadConfig();
+
+  const all = registry.getAll();
+  const services = Object.entries(all).map(([id, svc]) => {
+    let configContent = null;
+    if (svc.configFile) {
+      try {
+        configContent = fs.readFileSync(svc.configFile, 'utf-8');
+      } catch {
+        configContent = null;
+      }
+    }
+    return { id, ...svc, configContent };
+  });
+
+  const success = req.query.success || null;
+  const error   = req.query.error   || null;
+
+  res.render('settings', {
+    pageTitle:  'Settings',
+    activePage: 'settings',
+    pageScript: null,
+    config,
+    services,
+    success,
+    error
+  });
+});
+
+/* ------------------------------------------------------------------ */
+/*  POST /settings/hub — save hub configuration                        */
+/* ------------------------------------------------------------------ */
+router.post('/settings/hub', (req, res) => {
+  try {
+    const current = loadConfig();
+    const port            = parseInt(req.body.port,            10);
+    const statsIntervalMs = parseInt(req.body.statsIntervalMs, 10);
+    const maxUploadSizeMb = parseInt(req.body.maxUploadSizeMb, 10);
+
+    if (isNaN(port) || port < 1 || port > 65535)
+      return res.redirect('/settings?error=' + encodeURIComponent('Invalid port number'));
+    if (isNaN(statsIntervalMs) || statsIntervalMs < 100)
+      return res.redirect('/settings?error=' + encodeURIComponent('Stats interval must be at least 100ms'));
+    if (isNaN(maxUploadSizeMb) || maxUploadSizeMb < 1)
+      return res.redirect('/settings?error=' + encodeURIComponent('Max upload size must be at least 1 MB'));
+
+    saveConfig({ ...current, port, statsIntervalMs, maxUploadSizeMb });
+    res.redirect('/settings?success=' + encodeURIComponent('Hub configuration saved'));
+  } catch (err) {
+    console.error('[settings] POST /settings/hub:', err);
+    res.redirect('/settings?error=' + encodeURIComponent(err.message));
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/*  POST /settings/config/:id — save service config file               */
+/* ------------------------------------------------------------------ */
+router.post('/settings/config/:id', (req, res) => {
+  const { id }   = req.params;
+  const registry = req.app.get('registry');
+
+  const svc = registry.get(id);
+  if (!svc) return res.redirect('/settings?error=' + encodeURIComponent('Service not found: ' + id));
+  if (!svc.configFile) return res.redirect('/settings?error=' + encodeURIComponent('No config file configured for ' + id));
+
+  try {
+    fs.writeFileSync(svc.configFile, req.body.content || '');
+    res.redirect('/settings?success=' + encodeURIComponent(`Config file saved for ${svc.name}`));
+  } catch (err) {
+    console.error(`[settings] POST /settings/config/${id}:`, err);
+    res.redirect('/settings?error=' + encodeURIComponent(err.message));
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/*  POST /settings/services/add                                         */
+/* ------------------------------------------------------------------ */
+router.post('/settings/services/add', (req, res) => {
+  const registry = req.app.get('registry');
+  const { id, name, unit, deployPath, repo, configFile, group, description } = req.body;
+
+  if (!id || !name || !unit)
+    return res.redirect('/settings?error=' + encodeURIComponent('id, name, and unit are required'));
+
+  if (registry.get(id))
+    return res.redirect('/settings?error=' + encodeURIComponent(`Service id "${id}" already exists`));
+
+  try {
+    registry.add(id.trim(), {
+      name: name.trim(),
+      unit: unit.trim(),
+      deployPath:  deployPath  ? deployPath.trim()  : null,
+      repo:        repo        ? repo.trim()        : null,
+      configFile:  configFile  ? configFile.trim()  : null,
+      group:       group       ? group.trim()       : null,
+      description: description ? description.trim() : null
+    });
+    res.redirect('/settings?success=' + encodeURIComponent(`Service "${name}" added`));
+  } catch (err) {
+    console.error('[settings] add service:', err);
+    res.redirect('/settings?error=' + encodeURIComponent(err.message));
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/*  POST /settings/services/remove/:id                                  */
+/* ------------------------------------------------------------------ */
+router.post('/settings/services/remove/:id', (req, res) => {
+  const { id }   = req.params;
+  const registry = req.app.get('registry');
+
+  const svc = registry.get(id);
+  if (!svc) return res.redirect('/settings?error=' + encodeURIComponent('Service not found: ' + id));
+
+  try {
+    registry.remove(id);
+    res.redirect('/settings?success=' + encodeURIComponent(`Service "${svc.name}" removed`));
+  } catch (err) {
+    console.error(`[settings] remove ${id}:`, err);
+    res.redirect('/settings?error=' + encodeURIComponent(err.message));
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/*  POST /settings/services/update/:id                                  */
+/* ------------------------------------------------------------------ */
+router.post('/settings/services/update/:id', (req, res) => {
+  const { id }   = req.params;
+  const registry = req.app.get('registry');
+
+  const svc = registry.get(id);
+  if (!svc) return res.redirect('/settings?error=' + encodeURIComponent('Service not found: ' + id));
+
+  const { name, unit, deployPath, repo, configFile, group, description } = req.body;
+
+  if (!name || !unit)
+    return res.redirect('/settings?error=' + encodeURIComponent('name and unit are required'));
+
+  try {
+    registry.update(id, {
+      name:        name.trim(),
+      unit:        unit.trim(),
+      deployPath:  deployPath  ? deployPath.trim()  : null,
+      repo:        repo        ? repo.trim()        : null,
+      configFile:  configFile  ? configFile.trim()  : null,
+      group:       group       ? group.trim()       : null,
+      description: description ? description.trim() : null
+    });
+    res.redirect('/settings?success=' + encodeURIComponent(`Service "${name}" updated`));
+  } catch (err) {
+    console.error(`[settings] update ${id}:`, err);
+    res.redirect('/settings?error=' + encodeURIComponent(err.message));
+  }
+});
+
+module.exports = router;

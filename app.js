@@ -5,7 +5,10 @@ const Systemctl = require('./services/systemctl');
 const Stats    = require('./services/stats');
 
 const dashboardRouter = require('./routes/dashboard');
-const logsRouter = require('./routes/logs');
+const logsRouter      = require('./routes/logs');
+const systemRouter    = require('./routes/system');
+const deployRouter    = require('./routes/deploy');
+const settingsRouter  = require('./routes/settings');
 
 function createApp() {
   const app = express();
@@ -34,6 +37,9 @@ function createApp() {
   // --- Routes ------------------------------------------------------
   app.use('/', dashboardRouter);
   app.use('/', logsRouter);
+  app.use('/', systemRouter);
+  app.use('/', deployRouter);
+  app.use('/', settingsRouter);
 
   return app;
 }
