@@ -1,0 +1,25 @@
+<%- include('layout') %>
+
+<h1 class="page-title">Log Viewer</h1>
+
+<div class="log-container">
+
+  <div class="log-toolbar">
+    <select id="serviceSelect" class="log-select">
+      <option value="">— select a service —</option>
+      <% services.forEach(function(svc) { %>
+      <option value="<%= svc.id %>"><%= svc.name %></option>
+      <% }); %>
+    </select>
+
+    <button id="pauseBtn" class="btn" disabled>Pause</button>
+    <button id="clearBtn" class="btn btn-secondary">Clear</button>
+
+    <input id="filterInput" class="log-filter" type="text" placeholder="Filter output…">
+  </div>
+
+  <div id="logOutput" class="log-output"></div>
+
+</div>
+
+<%- include('partials/footer') %>
