@@ -1,0 +1,15 @@
+[Unit]
+Description=RPi Hub - Service Management Dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/node /home/obrelix/rpi-hub/server.js
+WorkingDirectory=/home/obrelix/rpi-hub
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
