@@ -1,0 +1,24 @@
+{
+  "name": "rpi-hub",
+  "version": "0.1.0",
+  "description": "Raspberry Pi service management dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --verbose"
+  },
+  "author": "Obrelix",
+  "license": "MIT",
+  "dependencies": {
+    "adm-zip": "^0.5.17",
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "multer": "^2.1.1",
+    "socket.io": "^4.8.3",
+    "tar": "^7.5.13"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0"
+  }
+}
