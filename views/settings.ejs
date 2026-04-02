@@ -17,7 +17,7 @@
       <tr>
         <th><label for="cfg-port">Port</label></th>
         <td>
-          <input id="cfg-port" class="input" type="number" name="port"
+          <input id="cfg-port" class="form-input" type="number" name="port"
                  value="<%= config.port || 3000 %>" min="1" max="65535" required>
           <span class="text-muted" style="font-size:.8rem;margin-left:.5rem;">Requires server restart to take effect</span>
         </td>
@@ -25,14 +25,14 @@
       <tr>
         <th><label for="cfg-stats">Stats Interval (ms)</label></th>
         <td>
-          <input id="cfg-stats" class="input" type="number" name="statsIntervalMs"
+          <input id="cfg-stats" class="form-input" type="number" name="statsIntervalMs"
                  value="<%= config.statsIntervalMs || 2000 %>" min="100" required>
         </td>
       </tr>
       <tr>
         <th><label for="cfg-upload">Max Upload Size (MB)</label></th>
         <td>
-          <input id="cfg-upload" class="input" type="number" name="maxUploadSizeMb"
+          <input id="cfg-upload" class="form-input" type="number" name="maxUploadSizeMb"
                  value="<%= config.maxUploadSizeMb || 50 %>" min="1" required>
         </td>
       </tr>
@@ -56,31 +56,31 @@
       <table class="info-table">
         <tr>
           <th><label>Name</label></th>
-          <td><input class="input" type="text" name="name" value="<%= svc.name %>" required></td>
+          <td><input class="form-input" type="text" name="name" value="<%= svc.name %>" required></td>
         </tr>
         <tr>
           <th><label>Unit</label></th>
-          <td><input class="input" type="text" name="unit" value="<%= svc.unit %>" required></td>
+          <td><input class="form-input" type="text" name="unit" value="<%= svc.unit %>" required></td>
         </tr>
         <tr>
           <th><label>Deploy Path</label></th>
-          <td><input class="input" type="text" name="deployPath" value="<%= svc.deployPath || '' %>"></td>
+          <td><input class="form-input" type="text" name="deployPath" value="<%= svc.deployPath || '' %>"></td>
         </tr>
         <tr>
           <th><label>Repository</label></th>
-          <td><input class="input" type="text" name="repo" value="<%= svc.repo || '' %>"></td>
+          <td><input class="form-input" type="text" name="repo" value="<%= svc.repo || '' %>"></td>
         </tr>
         <tr>
           <th><label>Config File</label></th>
-          <td><input class="input" type="text" name="configFile" value="<%= svc.configFile || '' %>"></td>
+          <td><input class="form-input" type="text" name="configFile" value="<%= svc.configFile || '' %>"></td>
         </tr>
         <tr>
           <th><label>Group</label></th>
-          <td><input class="input" type="text" name="group" value="<%= svc.group || '' %>"></td>
+          <td><input class="form-input" type="text" name="group" value="<%= svc.group || '' %>"></td>
         </tr>
         <tr>
           <th><label>Description</label></th>
-          <td><input class="input" type="text" name="description" value="<%= svc.description || '' %>"></td>
+          <td><input class="form-input" type="text" name="description" value="<%= svc.description || '' %>"></td>
         </tr>
       </table>
       <div style="margin-top:1rem;display:flex;gap:.5rem">
@@ -104,35 +104,35 @@
       <table class="info-table">
         <tr>
           <th><label>ID <span class="text-muted">(unique key)</span></label></th>
-          <td><input class="input" type="text" name="id" placeholder="my-service" required></td>
+          <td><input class="form-input" type="text" name="id" placeholder="my-service" required></td>
         </tr>
         <tr>
           <th><label>Name</label></th>
-          <td><input class="input" type="text" name="name" placeholder="My Service" required></td>
+          <td><input class="form-input" type="text" name="name" placeholder="My Service" required></td>
         </tr>
         <tr>
           <th><label>Unit</label></th>
-          <td><input class="input" type="text" name="unit" placeholder="my-service.service" required></td>
+          <td><input class="form-input" type="text" name="unit" placeholder="my-service.service" required></td>
         </tr>
         <tr>
           <th><label>Deploy Path</label></th>
-          <td><input class="input" type="text" name="deployPath" placeholder="/home/pi/my-service"></td>
+          <td><input class="form-input" type="text" name="deployPath" placeholder="/home/pi/my-service"></td>
         </tr>
         <tr>
           <th><label>Repository</label></th>
-          <td><input class="input" type="text" name="repo" placeholder="https://github.com/…"></td>
+          <td><input class="form-input" type="text" name="repo" placeholder="https://github.com/…"></td>
         </tr>
         <tr>
           <th><label>Config File</label></th>
-          <td><input class="input" type="text" name="configFile" placeholder="/home/pi/my-service/config.yaml"></td>
+          <td><input class="form-input" type="text" name="configFile" placeholder="/home/pi/my-service/config.yaml"></td>
         </tr>
         <tr>
           <th><label>Group</label></th>
-          <td><input class="input" type="text" name="group" placeholder="led-panel"></td>
+          <td><input class="form-input" type="text" name="group" placeholder="led-panel"></td>
         </tr>
         <tr>
           <th><label>Description</label></th>
-          <td><input class="input" type="text" name="description"></td>
+          <td><input class="form-input" type="text" name="description"></td>
         </tr>
       </table>
       <div style="margin-top:1rem">
@@ -152,12 +152,12 @@
   <div class="card-title"><%= svc.name %> — <code style="font-size:.85em"><%= svc.configFile %></code></div>
   <form method="POST" action="/settings/config/<%= svc.id %>">
     <% if (svc.configContent !== null) { %>
-    <textarea class="input" name="content" rows="12"
-              style="width:100%;font-family:monospace;font-size:.85rem;resize:vertical"><%= svc.configContent %></textarea>
+    <textarea class="form-textarea" name="content" rows="12"
+              style="font-size:.85rem;resize:vertical"><%= svc.configContent %></textarea>
     <% } else { %>
     <p class="text-muted">Could not read file (does not exist or no permission).</p>
-    <textarea class="input" name="content" rows="12"
-              style="width:100%;font-family:monospace;font-size:.85rem;resize:vertical"></textarea>
+    <textarea class="form-textarea" name="content" rows="12"
+              style="font-size:.85rem;resize:vertical"></textarea>
     <% } %>
     <div style="margin-top:.5rem">
       <button class="btn btn-primary btn-sm" type="submit">Save Config File</button>

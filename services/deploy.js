@@ -31,16 +31,23 @@ class DeployService {
     });
   }
 
-  async extractUpload(filePath, deployPath) {
-    const ext = path.extname(filePath).toLowerCase();
-    const basename = path.basename(filePath).toLowerCase();
-    if (ext === '.zip') {
+  async extractUpload(filePath, deployPath, originalName) {
+    const name = (originalName || path.basename(filePath)).toLowerCase();
+    if (name.endsWith('.zip')) {
       const zip = new AdmZip(filePath);
+      // Guard against zip path traversal
+      const resolvedDeploy = path.resolve(deployPath);
+      for (const entry of zip.getEntries()) {
+        const entryPath = path.resolve(path.join(resolvedDeploy, entry.entryName));
+        if (!entryPath.startsWith(resolvedDeploy + path.sep) && entryPath !== resolvedDeploy) {
+          throw new Error(`Zip entry "${entry.entryName}" attempts path traversal`);
+        }
+      }
       zip.extractAllTo(deployPath, true);
-    } else if (basename.endsWith('.tar.gz') || basename.endsWith('.tgz')) {
+    } else if (name.endsWith('.tar.gz') || name.endsWith('.tgz')) {
       await tar.extract({ file: filePath, cwd: deployPath });
     } else {
-      throw new Error(`Unsupported archive format: ${ext}`);
+      throw new Error(`Unsupported archive format. Use .zip, .tar.gz, or .tgz`);
     }
   }
 

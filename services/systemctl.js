@@ -1,6 +1,12 @@
 const { exec } = require('child_process');
 
 class Systemctl {
+  _validateUnit(unit) {
+    if (!/^[a-zA-Z0-9._@:-]+$/.test(unit)) {
+      throw new Error(`Invalid unit name: ${unit}`);
+    }
+  }
+
   _exec(command) {
     return new Promise((resolve, reject) => {
       exec(command, (error, stdout, stderr) => {
@@ -11,6 +17,7 @@ class Systemctl {
   }
 
   async getStatus(unit) {
+    this._validateUnit(unit);
     const cmd = `systemctl show ${unit} --property=ActiveState,SubState,MainPID,ActiveEnterTimestamp --value`;
     const stdout = await this._exec(cmd);
     const lines = stdout.trim().split('\n');
@@ -37,22 +44,27 @@ class Systemctl {
   }
 
   async start(unit) {
+    this._validateUnit(unit);
     return this._exec(`systemctl start ${unit}`);
   }
 
   async stop(unit) {
+    this._validateUnit(unit);
     return this._exec(`systemctl stop ${unit}`);
   }
 
   async restart(unit) {
+    this._validateUnit(unit);
     return this._exec(`systemctl restart ${unit}`);
   }
 
   async getRecentLogs(unit, lines = 20) {
+    this._validateUnit(unit);
     return this._exec(`journalctl -u ${unit} -n ${lines} --no-pager`);
   }
 
   async waitForState(unit, targetState, timeoutMs = 10000) {
+    this._validateUnit(unit);
     const start = Date.now();
     while (Date.now() - start < timeoutMs) {
       const status = await this.getStatus(unit);

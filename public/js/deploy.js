@@ -45,18 +45,18 @@ function handleDragOver(event, serviceId) {
   event.preventDefault();
   event.dataTransfer.dropEffect = 'copy';
   const zone = document.getElementById('drop-' + serviceId);
-  if (zone) zone.classList.add('drag-over');
+  if (zone) zone.classList.add('dragover');
 }
 
 function handleDragLeave(event, serviceId) {
   const zone = document.getElementById('drop-' + serviceId);
-  if (zone) zone.classList.remove('drag-over');
+  if (zone) zone.classList.remove('dragover');
 }
 
 function handleDrop(event, serviceId) {
   event.preventDefault();
   const zone = document.getElementById('drop-' + serviceId);
-  if (zone) zone.classList.remove('drag-over');
+  if (zone) zone.classList.remove('dragover');
   const file = event.dataTransfer.files[0];
   if (file) uploadFile(serviceId, file);
 }

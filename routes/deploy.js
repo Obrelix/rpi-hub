@@ -97,7 +97,7 @@ router.post('/deploy/:id/upload', upload.single('archive'), async (req, res) => 
 
   try {
     if (io) io.emit('deploy-progress', { id, text: `Extracting ${req.file.originalname}…\n` });
-    await deployService.extractUpload(filePath, svc.deployPath);
+    await deployService.extractUpload(filePath, svc.deployPath, req.file.originalname);
     if (io) io.emit('deploy-progress', { id, text: 'Extraction complete. Restarting service…\n' });
 
     try {

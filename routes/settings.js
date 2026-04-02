@@ -5,6 +5,12 @@ const router  = express.Router();
 
 const CONFIG_PATH = path.join(__dirname, '..', 'config.json');
 
+function isAllowedPath(filePath) {
+  if (!filePath) return false;
+  const resolved = path.resolve(filePath);
+  return resolved.startsWith('/home/obrelix/');
+}
+
 function loadConfig() {
   try {
     return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
@@ -27,7 +33,7 @@ router.get('/settings', (req, res) => {
   const all = registry.getAll();
   const services = Object.entries(all).map(([id, svc]) => {
     let configContent = null;
-    if (svc.configFile) {
+    if (svc.configFile && isAllowedPath(svc.configFile)) {
       try {
         configContent = fs.readFileSync(svc.configFile, 'utf-8');
       } catch {
@@ -86,6 +92,7 @@ router.post('/settings/config/:id', (req, res) => {
   const svc = registry.get(id);
   if (!svc) return res.redirect('/settings?error=' + encodeURIComponent('Service not found: ' + id));
   if (!svc.configFile) return res.redirect('/settings?error=' + encodeURIComponent('No config file configured for ' + id));
+  if (!isAllowedPath(svc.configFile)) return res.redirect('/settings?error=' + encodeURIComponent('Config file path is not in an allowed location'));
 
   try {
     fs.writeFileSync(svc.configFile, req.body.content || '');
@@ -109,13 +116,17 @@ router.post('/settings/services/add', (req, res) => {
   if (registry.get(id))
     return res.redirect('/settings?error=' + encodeURIComponent(`Service id "${id}" already exists`));
 
+  const trimmedConfigFile = configFile ? configFile.trim() : null;
+  if (trimmedConfigFile && !isAllowedPath(trimmedConfigFile))
+    return res.redirect('/settings?error=' + encodeURIComponent('Config file path is not in an allowed location'));
+
   try {
     registry.add(id.trim(), {
       name: name.trim(),
       unit: unit.trim(),
       deployPath:  deployPath  ? deployPath.trim()  : null,
       repo:        repo        ? repo.trim()        : null,
-      configFile:  configFile  ? configFile.trim()  : null,
+      configFile:  trimmedConfigFile,
       group:       group       ? group.trim()       : null,
       description: description ? description.trim() : null
     });
@@ -160,13 +171,17 @@ router.post('/settings/services/update/:id', (req, res) => {
   if (!name || !unit)
     return res.redirect('/settings?error=' + encodeURIComponent('name and unit are required'));
 
+  const trimmedConfigFileUpdate = configFile ? configFile.trim() : null;
+  if (trimmedConfigFileUpdate && !isAllowedPath(trimmedConfigFileUpdate))
+    return res.redirect('/settings?error=' + encodeURIComponent('Config file path is not in an allowed location'));
+
   try {
     registry.update(id, {
       name:        name.trim(),
       unit:        unit.trim(),
       deployPath:  deployPath  ? deployPath.trim()  : null,
       repo:        repo        ? repo.trim()        : null,
-      configFile:  configFile  ? configFile.trim()  : null,
+      configFile:  trimmedConfigFileUpdate,
       group:       group       ? group.trim()       : null,
       description: description ? description.trim() : null
     });
