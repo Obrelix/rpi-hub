@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= pageTitle ? pageTitle + ' — RPi Hub' : 'RPi Hub' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">RPi Hub</a>
+    <ul class="nav-links">
+      <li><a href="/"        class="<%= activePage === 'dashboard' ? 'active' : '' %>">Dashboard</a></li>
+      <li><a href="/logs"    class="<%= activePage === 'logs'      ? 'active' : '' %>">Logs</a></li>
+      <li><a href="/system"  class="<%= activePage === 'system'    ? 'active' : '' %>">System</a></li>
+      <li><a href="/deploy"  class="<%= activePage === 'deploy'    ? 'active' : '' %>">Deploy</a></li>
+      <li><a href="/settings"class="<%= activePage === 'settings'  ? 'active' : '' %>">Settings</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="main">

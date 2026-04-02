@@ -1,5 +1,10 @@
-const express = require('express');
-const path = require('path');
+const express  = require('express');
+const path     = require('path');
+const Registry = require('./services/registry');
+const Systemctl = require('./services/systemctl');
+const Stats    = require('./services/stats');
+
+const dashboardRouter = require('./routes/dashboard');
 
 function createApp() {
   const app = express();
@@ -11,10 +16,22 @@ function createApp() {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.static(path.join(__dirname, 'public')));
 
-  // Health check
+  // --- Instantiate services ----------------------------------------
+  const registry  = new Registry(path.join(__dirname, 'services.json'));
+  const systemctl = new Systemctl();
+  const stats     = new Stats();
+
+  app.set('registry',  registry);
+  app.set('systemctl', systemctl);
+  app.set('stats',     stats);
+
+  // --- Health check ------------------------------------------------
   app.get('/health', (req, res) => {
     res.json({ status: 'ok', uptime: process.uptime() });
   });
+
+  // --- Routes ------------------------------------------------------
+  app.use('/', dashboardRouter);
 
   return app;
 }

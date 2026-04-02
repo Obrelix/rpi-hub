@@ -1,0 +1,12 @@
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/toast.js"></script>
+<% if (typeof pageScript !== 'undefined' && pageScript) { %>
+<script src="<%= pageScript %>"></script>
+<% } %>
+
+</body>
+</html>

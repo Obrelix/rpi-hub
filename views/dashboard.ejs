@@ -1,0 +1,96 @@
+<%- include('layout') %>
+
+<h1 class="page-title">Dashboard</h1>
+
+<!-- ── Stats Bar ─────────────────────────────────────────────────── -->
+<div class="stats-bar">
+
+  <div class="stat-card">
+    <div class="stat-label">CPU</div>
+    <div class="stat-value" id="statCpuValue">—</div>
+    <div class="stat-bar">
+      <div class="stat-bar-fill" id="statCpuBar"></div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-label">Temperature</div>
+    <div class="stat-value" id="statTempValue">—</div>
+    <div class="stat-bar">
+      <div class="stat-bar-fill" id="statTempBar"></div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-label">Memory</div>
+    <div class="stat-value" id="statMemValue">—</div>
+    <div class="stat-bar">
+      <div class="stat-bar-fill" id="statMemBar"></div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-label">Disk</div>
+    <div class="stat-value" id="statDiskValue">—</div>
+    <div class="stat-bar">
+      <div class="stat-bar-fill" id="statDiskBar"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Services Grid ─────────────────────────────────────────────── -->
+<div class="section-heading">Services</div>
+
+<div class="services-grid">
+<% services.forEach(function(svc) {
+  const isRunning = svc.active === 'active';
+  const isFailed  = svc.active === 'failed';
+  const cardClass = isRunning ? 'running' : (isFailed ? 'failed' : '');
+  let badgeClass  = 'stopped';
+  let badgeLabel  = 'STOPPED';
+  if (isRunning) { badgeClass = 'running'; badgeLabel = 'RUNNING'; }
+  else if (isFailed) { badgeClass = 'failed'; badgeLabel = 'FAILED'; }
+%>
+  <div class="service-card <%= cardClass %>" id="svc-<%= svc.id %>">
+
+    <div class="service-header">
+      <span class="service-name"><%= svc.name %></span>
+      <span class="status-badge <%= badgeClass %>"><%= badgeLabel %></span>
+    </div>
+
+    <% if (svc.group) { %>
+    <div><span class="group-tag"><%= svc.group %></span></div>
+    <% } %>
+
+    <% if (svc.description) { %>
+    <p class="service-desc"><%= svc.description %></p>
+    <% } %>
+
+    <% if (isRunning && svc.since) { %>
+    <div class="service-meta">Active since: <%= svc.since %></div>
+    <% } %>
+
+    <div class="service-actions">
+      <% if (!isRunning) { %>
+      <button class="btn btn-success btn-sm"
+              onclick="startService('<%= svc.id %>', this)">
+        Start
+      </button>
+      <% } else { %>
+      <button class="btn btn-danger btn-sm"
+              onclick="stopService('<%= svc.id %>', this)">
+        Stop
+      </button>
+      <button class="btn btn-secondary btn-sm"
+              onclick="restartService('<%= svc.id %>', this)">
+        Restart
+      </button>
+      <% } %>
+    </div>
+
+  </div>
+<% }); %>
+</div>
+
+<%- include('partials/footer') %>
