@@ -90,14 +90,17 @@
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
         showToast(json.error || 'Request failed', 'error');
+        setLoading(btn, false);
+      } else {
+        // Reload to show updated service status.
+        // Don't rely solely on the socket event — the fetch response
+        // confirms the action completed, so reload immediately.
+        window.location.reload();
       }
     } catch (err) {
       showToast('Network error: ' + err.message, 'error');
       setLoading(btn, false);
     }
-    // Button re-enables on page reload triggered by socket event.
-    // If no socket event arrives within 8s, re-enable manually.
-    setTimeout(() => setLoading(btn, false), 8000);
   }
 
   /* ----------------------------------------------------------
