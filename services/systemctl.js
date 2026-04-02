@@ -18,14 +18,23 @@ class Systemctl {
 
   async getStatus(unit) {
     this._validateUnit(unit);
-    const cmd = `systemctl show ${unit} --property=ActiveState,SubState,MainPID,ActiveEnterTimestamp --value`;
+    const cmd = `systemctl show ${unit} --property=ActiveState,SubState,MainPID,ActiveEnterTimestamp`;
     const stdout = await this._exec(cmd);
-    const lines = stdout.trim().split('\n');
+
+    // Parse key=value pairs (order is not guaranteed with --value)
+    const props = {};
+    for (const line of stdout.trim().split('\n')) {
+      const idx = line.indexOf('=');
+      if (idx !== -1) {
+        props[line.slice(0, idx)] = line.slice(idx + 1);
+      }
+    }
+
     return {
-      active: lines[0] || 'unknown',
-      sub: lines[1] || 'unknown',
-      pid: lines[2] || '',
-      since: lines[3] || ''
+      active: props.ActiveState || 'unknown',
+      sub: props.SubState || 'unknown',
+      pid: props.MainPID || '',
+      since: props.ActiveEnterTimestamp || ''
     };
   }
 

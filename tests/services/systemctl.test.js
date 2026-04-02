@@ -16,7 +16,7 @@ beforeEach(() => {
 
 test('getStatus parses active service correctly', async () => {
   exec.mockImplementation((cmd, cb) => {
-    cb(null, 'active\nrunning\n1234\n2025-01-01 10:00:00 UTC', '');
+    cb(null, 'MainPID=1234\nActiveState=active\nSubState=running\nActiveEnterTimestamp=2025-01-01 10:00:00 UTC', '');
   });
   const status = await systemctl.getStatus('test.service');
   expect(status.active).toBe('active');
@@ -31,12 +31,12 @@ test('getStatus parses active service correctly', async () => {
 
 test('getStatus handles inactive service', async () => {
   exec.mockImplementation((cmd, cb) => {
-    cb(null, 'inactive\ndead\n\n', '');
+    cb(null, 'MainPID=0\nActiveState=inactive\nSubState=dead\nActiveEnterTimestamp=', '');
   });
   const status = await systemctl.getStatus('test.service');
   expect(status.active).toBe('inactive');
   expect(status.sub).toBe('dead');
-  expect(status.pid).toBe('');
+  expect(status.pid).toBe('0');
 });
 
 test('start calls systemctl start', async () => {
@@ -79,9 +79,9 @@ test('getAllStatuses returns status for multiple units', async () => {
   exec.mockImplementation((cmd, cb) => {
     callCount++;
     if (callCount === 1) {
-      cb(null, 'active\nrunning\n1000\n2025-01-01 10:00:00 UTC', '');
+      cb(null, 'MainPID=1000\nActiveState=active\nSubState=running\nActiveEnterTimestamp=2025-01-01 10:00:00 UTC', '');
     } else {
-      cb(null, 'inactive\ndead\n\n', '');
+      cb(null, 'MainPID=0\nActiveState=inactive\nSubState=dead\nActiveEnterTimestamp=', '');
     }
   });
   const statuses = await systemctl.getAllStatuses(['a.service', 'b.service']);
