@@ -110,28 +110,6 @@
     socket.emit('radio:mode', { mode: modeSelect.value });
   });
 
-  // Station management
-  var addBtn = widget.querySelector('.radio-add-station');
-  var removeBtn = widget.querySelector('.radio-remove-station');
-
-  addBtn.addEventListener('click', function () {
-    var name = prompt('Station name:');
-    if (!name) return;
-    var url = prompt('Stream URL:');
-    if (!url) return;
-    var genre = prompt('Genre (optional):') || '';
-    socket.emit('radio:station-add', { name: name, url: url, genre: genre });
-  });
-
-  removeBtn.addEventListener('click', function () {
-    var idx = parseInt(stationSelect.value);
-    if (isNaN(idx) || stations.length === 0) return;
-    var name = stations[idx] ? stations[idx].name : 'this station';
-    if (confirm('Remove "' + name + '"?')) {
-      socket.emit('radio:station-remove', { index: idx });
-    }
-  });
-
   updateStatus();
   updateNowPlaying();
 })();
