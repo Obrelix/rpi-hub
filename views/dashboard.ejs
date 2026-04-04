@@ -63,7 +63,11 @@
   <div class="radio-selectors">
     <div>
       <label>Station</label>
-      <select class="radio-station-select"></select>
+      <div class="radio-station-row">
+        <select class="radio-station-select"></select>
+        <button class="radio-add-station" title="Add station">+</button>
+        <button class="radio-remove-station" title="Remove station">&minus;</button>
+      </div>
     </div>
     <div>
       <label>Mode</label>
@@ -129,5 +133,5 @@
 <% }); %>
 </div>
 
-<script src="/js/radio-widget.js"></script>
 <%- include('partials/footer') %>
+<script src="/js/radio-widget.js"></script>

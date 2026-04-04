@@ -10,21 +10,34 @@
 function setupRadioSocket(io) {
   let radioSocketId = null;
 
+  // Cache last known state so new browser clients get it immediately
+  let cachedStatus = null;
+  let cachedNowPlaying = null;
+  let cachedStations = null;
+
   io.on('connection', (socket) => {
+    // Send cached state to newly connected browsers
+    if (cachedStatus) socket.emit('radio:status', cachedStatus);
+    if (cachedNowPlaying) socket.emit('radio:now-playing', cachedNowPlaying);
+    if (cachedStations) socket.emit('radio:stations', cachedStations);
+
     // rpi-radio identifies itself by emitting radio:status on connect
     socket.on('radio:status', (data) => {
       if (!radioSocketId || radioSocketId === socket.id) {
         radioSocketId = socket.id;
       }
+      cachedStatus = data;
       io.emit('radio:status', data);
     });
 
     // Relay status events from rpi-radio to all dashboards
     socket.on('radio:now-playing', (data) => {
+      cachedNowPlaying = data;
       io.emit('radio:now-playing', data);
     });
 
     socket.on('radio:stations', (data) => {
+      cachedStations = data;
       io.emit('radio:stations', data);
     });
 

@@ -855,3 +855,36 @@ a:hover {
   color: var(--text-primary);
   font-size: 13px;
 }
+
+.radio-station-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.radio-station-row select {
+  flex: 1;
+}
+
+.radio-add-station,
+.radio-remove-station {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.radio-add-station:hover {
+  background: var(--success);
+  color: #fff;
+}
+
+.radio-remove-station:hover {
+  background: var(--danger);
+  color: #fff;
+}
