@@ -45,7 +45,8 @@
       "Bash(scp public/js/settings.js obrelix@192.168.1.201:/home/obrelix/rpi-hub/public/js/settings.js)",
       "Bash(scp services/systemctl.js obrelix@192.168.1.201:/home/obrelix/rpi-hub/services/systemctl.js)",
       "Bash(scp routes/dashboard.js obrelix@192.168.1.201:/home/obrelix/rpi-hub/routes/dashboard.js)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
