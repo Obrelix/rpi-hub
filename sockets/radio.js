@@ -45,7 +45,7 @@ function setupRadioSocket(io) {
     const commands = [
       'radio:play', 'radio:pause', 'radio:next', 'radio:prev',
       'radio:volume', 'radio:mode',
-      'radio:station-add', 'radio:station-remove',
+      'radio:stations-update', 'radio:stations-export',
     ];
     commands.forEach((cmd) => {
       socket.on(cmd, (data) => {
