@@ -39,6 +39,42 @@
 
 </div>
 
+<!-- ── Radio Control Widget ───────────────────────────────────────── -->
+<div class="radio-widget" id="radio-widget">
+  <div class="radio-header">
+    <h3>RPi Radio</h3>
+    <span class="radio-status-badge stopped">Offline</span>
+  </div>
+  <div class="radio-now-playing">
+    <div class="radio-station-name">No station</div>
+    <div class="radio-track-title"></div>
+    <div class="radio-bitrate"></div>
+  </div>
+  <div class="radio-transport">
+    <button class="radio-prev" title="Previous">&#x23EE;</button>
+    <button class="radio-play-pause" title="Play/Pause">&#x25B6;</button>
+    <button class="radio-next" title="Next">&#x23ED;</button>
+  </div>
+  <div class="radio-volume-row">
+    <label>Volume</label>
+    <input type="range" class="radio-volume" min="0" max="100" value="70">
+    <span class="radio-volume-label">70%</span>
+  </div>
+  <div class="radio-selectors">
+    <div>
+      <label>Station</label>
+      <select class="radio-station-select"></select>
+    </div>
+    <div>
+      <label>Mode</label>
+      <select class="radio-mode-select">
+        <option value="spectrum">Spectrum</option>
+        <option value="ticker">Ticker</option>
+      </select>
+    </div>
+  </div>
+</div>
+
 <!-- ── Services Grid ─────────────────────────────────────────────── -->
 <div class="section-heading">Services</div>
 
@@ -93,4 +129,5 @@
 <% }); %>
 </div>
 
+<script src="/js/radio-widget.js"></script>
 <%- include('partials/footer') %>

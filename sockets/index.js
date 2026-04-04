@@ -1,5 +1,6 @@
 const { setupStatsBroadcast } = require('./stats');
 const { setupLogsSocket } = require('./logs');
+const setupRadioSocket = require('./radio');
 
 function setupSockets(io, services, config) {
   const statsBroadcast = setupStatsBroadcast(io, services.stats, config.statsIntervalMs);
@@ -12,6 +13,7 @@ function setupSockets(io, services, config) {
   });
 
   setupLogsSocket(io, services.registry);
+  setupRadioSocket(io);
 
   statsBroadcast.start();
   return { statsBroadcast };
