@@ -4,7 +4,7 @@ Project instructions for Claude Code. These instructions override default behavi
 
 ## Project Overview
 
-RPi Hub is a lightweight web dashboard for managing systemd services on a Raspberry Pi. It runs as a Node.js web server and lets users start/stop/restart LED matrix applications (Maze Battlegrounds, Voidex, and future services) from any device on the local network. It also provides live log streaming, system stats, OTA deployment, and config editing.
+RPi Hub is a lightweight web dashboard for managing systemd services on a Raspberry Pi. It runs as a Node.js web server and lets users start/stop/restart LED matrix applications (RPi Radio, Maze Battlegrounds, Voidex) from any device on the local network. It also provides live log streaming, system stats, OTA deployment, config editing, and a dedicated radio station management page.
 
 **Version:** 0.1.0
 **Runtime:** Node.js, Express, EJS, Socket.io
@@ -79,7 +79,9 @@ Entry point is `server.js`, which creates the HTTP server, attaches Socket.io, a
 | `sockets/index.js` | Registers all Socket.io event handlers |
 | `sockets/stats.js` | Broadcasts system metrics to all clients every 2 seconds |
 | `sockets/logs.js` | Manages per-client `journalctl -f` child processes for live log streaming |
+| `sockets/radio.js` | Relays Socket.io commands between dashboard browsers and rpi-radio service |
 | `routes/dashboard.js` | Dashboard page + service start/stop/restart API endpoints |
+| `routes/stations.js` | Stations page (radio playlist editor) |
 | `routes/logs.js` | Log viewer page |
 | `routes/system.js` | System info page (hostname, CPU, memory, disk, network) |
 | `routes/deploy.js` | Deploy page with git pull and file upload endpoints |
@@ -96,17 +98,25 @@ Browser (any LAN device)
       -> journalctl (log streaming via Socket.io)
   <- EJS templates (server-rendered HTML)
   <- Socket.io (real-time stats, status changes, log lines, deploy progress)
+
+Browser (Stations page / Dashboard radio widget)
+  -> Socket.io commands (play/pause/next/prev/volume/mode/stations-update)
+    -> sockets/radio.js (relay to rpi-radio)
+      -> rpi-radio Socket.io client
+  <- Socket.io events (radio:status, radio:now-playing, radio:stations)
+    <- sockets/radio.js (relay from rpi-radio, cached for new clients)
 ```
 
 ### File Organization
 
 ```
-routes/     HTTP request handling, renders views
-services/   Business logic (systemctl calls, stats collection, deploy operations)
-sockets/    Socket.io real-time event handling
-views/      EJS templates (server-rendered), layout.ejs + partials/footer.ejs pattern
-public/     Static assets: CSS dark theme, client-side JS (Socket.io clients)
-tests/      Jest tests: services/ for unit tests, routes/ for integration tests
+routes/      HTTP request handling, renders views
+services/    Business logic (systemctl calls, stats collection, deploy operations)
+sockets/     Socket.io real-time event handling (stats, logs, radio relay)
+views/       EJS templates (server-rendered), layout.ejs + partials/footer.ejs pattern
+public/js/   Client-side JS: dashboard controls, radio widget, station editor, log viewer
+public/css/  GitHub-dark theme (CSS custom properties)
+tests/       Jest tests: services/ for unit tests, routes/ for integration tests
 ```
 
 ## Key Design Decisions
@@ -129,7 +139,11 @@ These constraints exist for specific reasons. Understanding them helps you make 
 
 - **EJS layout uses a split include pattern.** Each page template starts with `<%- include('layout') %>` and ends with `<%- include('partials/footer') %>`. `layout.ejs` opens the HTML document through the `<main>` tag; `footer.ejs` closes it and injects Socket.io + page scripts. This is fragile — every page must include both, and the nav active state is driven by the `activePage` template variable.
 
-- **Socket.io is used for four concerns:** stats broadcasting (every 2s timer), service status change notifications (triggered by route handlers via `io.emit`), live log streaming (per-client `journalctl` child processes), and deploy progress output. The `io` instance is shared via `app.set('io', io)`.
+- **Socket.io is used for five concerns:** stats broadcasting (every 2s timer), service status change notifications (triggered by route handlers via `io.emit`), live log streaming (per-client `journalctl` child processes), deploy progress output, and radio command relay. The `io` instance is shared via `app.set('io', io)`.
+
+- **Radio Socket.io relay pattern.** `sockets/radio.js` acts as a bidirectional relay between dashboard browsers and the rpi-radio service. rpi-radio connects as a Socket.io client and identifies itself by emitting `radio:status`. The server caches the last known state (status, now-playing, stations) so new browser clients get it immediately. Commands from browsers (`radio:play`, `radio:pause`, `radio:next`, `radio:prev`, `radio:volume`, `radio:mode`, `radio:stations-update`, `radio:stations-export`) are forwarded to rpi-radio's socket. Status events from rpi-radio (`radio:status`, `radio:now-playing`, `radio:stations`) are broadcast to all connected browsers.
+
+- **Stations page uses client-side state with server confirmation.** `public/js/stations.js` maintains a local working copy of the station list for inline edits, reordering, and add/remove. Changes are not sent to rpi-radio until the user clicks Save, which emits `radio:stations-update` with the full list. The save button highlights when there are unsaved changes. Playing a station with unsaved changes triggers an auto-save first to keep indices in sync.
 
 - **`services.json` is the runtime service registry.** It's read at startup and modified at runtime through the Settings page. When adding a new managed service, add an entry here — no code changes needed. The `services.json.example` pattern is not used; the file ships with maze-battlegrounds and voidex pre-configured.
 
@@ -157,6 +171,8 @@ When writing new tests:
 - CSS uses custom properties (CSS variables) defined in `:root` in `public/css/style.css`. The theme is dark with GitHub-inspired colors: `--bg-primary: #0f1117`, `--bg-secondary: #161b22`, `--accent: #58a6ff`.
 - Client-side JS files are wrapped in IIFEs with `'use strict'` and expose necessary functions via `window.*` for inline `onclick` handlers in templates.
 - Toast notifications use `showToast(message, type)` from `public/js/toast.js`, which is loaded on every page via the footer partial.
+- `public/js/radio-widget.js` handles the dashboard radio widget (playback controls, station select, mode switching). Station management (add/remove) is handled exclusively by `public/js/stations.js` on the `/stations` page.
+- `public/js/stations.js` is the largest client-side file (~380 lines). It manages: table rendering, inline editing (double-click), drag-and-drop reorder, checkbox selection, CSV import/export, save with unsaved-change tracking, and the now-playing bar. All state is local until Save.
 
 ## Dependencies
 

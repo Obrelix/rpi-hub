@@ -57,6 +57,7 @@ router.post('/api/services/:id/start', async (req, res) => {
       conflicts.map(async (c) => {
         try {
           await systemctl.stop(c.unit);
+          await systemctl.disable(c.unit);
           await systemctl.waitForState(c.unit, 'inactive', 10000);
           io.emit('service-status-changed', { id: c.id, unit: c.unit, active: 'inactive' });
         } catch (e) {
@@ -65,6 +66,7 @@ router.post('/api/services/:id/start', async (req, res) => {
       })
     );
 
+    await systemctl.enable(svc.unit);
     await systemctl.start(svc.unit);
     const status = await systemctl.getStatus(svc.unit);
     io.emit('service-status-changed', { id, unit: svc.unit, active: status.active });
@@ -92,6 +94,7 @@ router.post('/api/services/:id/stop', async (req, res) => {
 
   try {
     await systemctl.stop(svc.unit);
+    await systemctl.disable(svc.unit);
     const status = await systemctl.getStatus(svc.unit);
     io.emit('service-status-changed', { id, unit: svc.unit, active: status.active });
     io.emit('toast', { message: `${svc.name} stopped`, type: 'warning' });

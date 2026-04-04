@@ -3,6 +3,7 @@ const path     = require('path');
 const Registry = require('./services/registry');
 const Systemctl = require('./services/systemctl');
 const Stats    = require('./services/stats');
+const WifiService = require('./services/wifi');
 
 const dashboardRouter = require('./routes/dashboard');
 const logsRouter      = require('./routes/logs');
@@ -29,6 +30,7 @@ function createApp() {
   app.set('registry',  registry);
   app.set('systemctl', systemctl);
   app.set('stats',     stats);
+  app.set('wifi',      new WifiService());
 
   // --- Health check ------------------------------------------------
   app.get('/health', (req, res) => {
