@@ -9,6 +9,7 @@ const logsRouter      = require('./routes/logs');
 const systemRouter    = require('./routes/system');
 const deployRouter    = require('./routes/deploy');
 const settingsRouter  = require('./routes/settings');
+const stationsRouter  = require('./routes/stations');
 
 function createApp() {
   const app = express();
@@ -39,6 +40,7 @@ function createApp() {
   app.use('/', logsRouter);
   app.use('/', systemRouter);
   app.use('/', deployRouter);
+  app.use('/', stationsRouter);
   app.use('/', settingsRouter);
 
   // --- 404 handler -------------------------------------------------
