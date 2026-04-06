@@ -1,0 +1,13 @@
+[Unit]
+Description=RPi Hub WiFi Fallback Hotspot Monitor
+After=NetworkManager.service
+Wants=NetworkManager.service
+
+[Service]
+Type=simple
+ExecStart=/home/obrelix/rpi-hub/scripts/wifi-hotspot.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

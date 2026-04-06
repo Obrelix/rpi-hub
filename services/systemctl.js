@@ -52,6 +52,16 @@ class Systemctl {
     return results;
   }
 
+  async enable(unit) {
+    this._validateUnit(unit);
+    return this._exec(`systemctl enable ${unit}`);
+  }
+
+  async disable(unit) {
+    this._validateUnit(unit);
+    return this._exec(`systemctl disable ${unit}`);
+  }
+
   async start(unit) {
     this._validateUnit(unit);
     return this._exec(`systemctl start ${unit}`);

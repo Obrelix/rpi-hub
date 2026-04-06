@@ -1,7 +1,8 @@
-const express = require('express');
-const path    = require('path');
-const fs      = require('fs');
-const router  = express.Router();
+const express  = require('express');
+const path     = require('path');
+const fs       = require('fs');
+const { exec } = require('child_process');
+const router   = express.Router();
 
 const CONFIG_PATH = path.join(__dirname, '..', 'config.json');
 
@@ -49,7 +50,7 @@ router.get('/settings', (req, res) => {
   res.render('settings', {
     pageTitle:  'Settings',
     activePage: 'settings',
-    pageScript: null,
+    pageScript: '/js/settings.js',
     config,
     services,
     success,
@@ -190,6 +191,129 @@ router.post('/settings/services/update/:id', (req, res) => {
     console.error(`[settings] update ${id}:`, err);
     res.redirect('/settings?error=' + encodeURIComponent(err.message));
   }
+});
+
+/* ------------------------------------------------------------------ */
+/*  WiFi API endpoints                                                  */
+/* ------------------------------------------------------------------ */
+
+/** GET /settings/wifi — list saved networks + active connection */
+router.get('/settings/wifi', async (req, res) => {
+  const wifi = req.app.get('wifi');
+  try {
+    const [networks, active] = await Promise.all([
+      wifi.getNetworks(),
+      wifi.getActiveNetwork()
+    ]);
+    res.json({ networks, active });
+  } catch (err) {
+    console.error('[settings] GET /settings/wifi:', err.message);
+    res.json({ networks: [], active: null, error: err.message });
+  }
+});
+
+/** GET /settings/wifi/scan — scan for available WiFi networks */
+router.get('/settings/wifi/scan', async (req, res) => {
+  const wifi = req.app.get('wifi');
+  try {
+    const available = await wifi.scan();
+    res.json({ available });
+  } catch (err) {
+    console.error('[settings] GET /settings/wifi/scan:', err.message);
+    res.json({ available: [], error: err.message });
+  }
+});
+
+/** POST /settings/wifi/add — add a new WiFi network */
+router.post('/settings/wifi/add', async (req, res) => {
+  const wifi = req.app.get('wifi');
+  const { ssid, password } = req.body;
+  try {
+    await wifi.addNetwork(ssid, password);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[settings] POST /settings/wifi/add:', err.message);
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/** POST /settings/wifi/remove — remove a saved WiFi network */
+router.post('/settings/wifi/remove', async (req, res) => {
+  const wifi = req.app.get('wifi');
+  const { uuid } = req.body;
+  try {
+    await wifi.removeNetwork(uuid);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[settings] POST /settings/wifi/remove:', err.message);
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/** POST /settings/wifi/connect — connect to a saved WiFi network */
+router.post('/settings/wifi/connect', async (req, res) => {
+  const wifi = req.app.get('wifi');
+  const { uuid } = req.body;
+  try {
+    await wifi.connect(uuid);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[settings] POST /settings/wifi/connect:', err.message);
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/** GET /settings/wifi/hotspot — get hotspot monitor status */
+router.get('/settings/wifi/hotspot', async (req, res) => {
+  const wifi = req.app.get('wifi');
+  try {
+    const status = await wifi.getHotspotStatus();
+    res.json(status);
+  } catch (err) {
+    console.error('[settings] GET /settings/wifi/hotspot:', err.message);
+    res.json({ enabled: false, active: false, error: err.message });
+  }
+});
+
+/** POST /settings/wifi/hotspot — enable or disable hotspot monitor */
+router.post('/settings/wifi/hotspot', async (req, res) => {
+  const wifi = req.app.get('wifi');
+  const { enable } = req.body;
+  try {
+    if (enable) {
+      await wifi.enableHotspot();
+    } else {
+      await wifi.disableHotspot();
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[settings] POST /settings/wifi/hotspot:', err.message);
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/* ------------------------------------------------------------------ */
+/*  POST /settings/reboot — reboot the Raspberry Pi                    */
+/* ------------------------------------------------------------------ */
+router.post('/settings/reboot', (req, res) => {
+  res.json({ ok: true });
+  setTimeout(() => {
+    exec('sudo reboot', (err) => {
+      if (err) console.error('[settings] reboot failed:', err.message);
+    });
+  }, 1000);
+});
+
+/* ------------------------------------------------------------------ */
+/*  POST /settings/shutdown — shut down the Raspberry Pi               */
+/* ------------------------------------------------------------------ */
+router.post('/settings/shutdown', (req, res) => {
+  res.json({ ok: true });
+  setTimeout(() => {
+    exec('sudo shutdown -h now', (err) => {
+      if (err) console.error('[settings] shutdown failed:', err.message);
+    });
+  }, 1000);
 });
 
 module.exports = router;

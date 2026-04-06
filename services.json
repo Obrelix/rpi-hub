@@ -1,4 +1,13 @@
 {
+  "rpi-radio": {
+    "name": "RPi Radio",
+    "unit": "rpi-radio.service",
+    "deployPath": "/home/obrelix/rpi-radio",
+    "repo": "https://github.com/Obrelix/rpi-radio.git",
+    "configFile": "/home/obrelix/rpi-radio/config.json",
+    "group": "led-panel",
+    "description": "Internet radio with LED matrix visualizer"
+  },
   "maze-battlegrounds": {
     "name": "Maze Battlegrounds",
     "unit": "maze-battlegrounds.service",

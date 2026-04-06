@@ -3,12 +3,14 @@ const path     = require('path');
 const Registry = require('./services/registry');
 const Systemctl = require('./services/systemctl');
 const Stats    = require('./services/stats');
+const WifiService = require('./services/wifi');
 
 const dashboardRouter = require('./routes/dashboard');
 const logsRouter      = require('./routes/logs');
 const systemRouter    = require('./routes/system');
 const deployRouter    = require('./routes/deploy');
 const settingsRouter  = require('./routes/settings');
+const stationsRouter  = require('./routes/stations');
 
 function createApp() {
   const app = express();
@@ -28,6 +30,7 @@ function createApp() {
   app.set('registry',  registry);
   app.set('systemctl', systemctl);
   app.set('stats',     stats);
+  app.set('wifi',      new WifiService());
 
   // --- Health check ------------------------------------------------
   app.get('/health', (req, res) => {
@@ -39,6 +42,7 @@ function createApp() {
   app.use('/', logsRouter);
   app.use('/', systemRouter);
   app.use('/', deployRouter);
+  app.use('/', stationsRouter);
   app.use('/', settingsRouter);
 
   // --- 404 handler -------------------------------------------------
