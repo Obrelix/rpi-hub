@@ -80,6 +80,66 @@
   </div>
 </div>
 
+<!-- ── Signboard Widget ──────────────────────────────────────────── -->
+<div class="signboard-widget" id="signboard-widget">
+  <div class="signboard-header">
+    <h3>Signboard</h3>
+    <span class="signboard-status-badge stopped">Offline</span>
+  </div>
+  <div class="signboard-current"></div>
+
+  <textarea class="signboard-text" rows="2" placeholder="Type a message and press Enter\u2026" maxlength="500"></textarea>
+
+  <div class="signboard-controls-row">
+    <div class="signboard-control">
+      <label>Color</label>
+      <div class="signboard-color-swatches"></div>
+      <input type="text" class="signboard-color-hex" value="#ffffff" maxlength="7">
+    </div>
+    <div class="signboard-control">
+      <label>Background</label>
+      <div class="signboard-bg-swatches"></div>
+      <input type="text" class="signboard-bg-hex" value="#000000" maxlength="7">
+    </div>
+  </div>
+
+  <div class="signboard-controls-row">
+    <div class="signboard-control">
+      <label>Size</label>
+      <div class="signboard-radios">
+        <label><input type="radio" name="signboard-size" value="small"> Small</label>
+        <label><input type="radio" name="signboard-size" value="medium" checked> Medium</label>
+        <label><input type="radio" name="signboard-size" value="large"> Large</label>
+      </div>
+    </div>
+    <div class="signboard-control">
+      <label>Mode</label>
+      <div class="signboard-radios">
+        <label><input type="radio" name="signboard-mode" value="scroll-once" checked> Scroll</label>
+        <label><input type="radio" name="signboard-mode" value="persist"> Persist</label>
+        <label><input type="radio" name="signboard-mode" value="loop"> Loop</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="signboard-speed-row">
+    <label>Speed</label>
+    <input type="range" class="signboard-speed" min="1" max="5" value="2">
+    <span class="signboard-speed-label">2</span>
+  </div>
+
+  <div class="signboard-actions">
+    <button class="btn btn-success btn-sm signboard-send">Send</button>
+    <button class="btn btn-secondary btn-sm signboard-clear">Clear Display</button>
+  </div>
+
+  <div class="signboard-history-header">
+    <span>Recent messages</span>
+    <button type="button" class="signboard-clear-history">Clear</button>
+  </div>
+  <div class="signboard-history"></div>
+</div>
+
 <!-- ── Services Grid ─────────────────────────────────────────────── -->
 <div class="section-heading">Services</div>
 
@@ -136,3 +196,4 @@
 
 <%- include('partials/footer') %>
 <script src="/js/radio-widget.js"></script>
+<script src="/js/signboard-widget.js"></script>
