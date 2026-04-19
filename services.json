@@ -25,5 +25,14 @@
     "configFile": "/home/obrelix/config.yaml",
     "group": "led-panel",
     "description": "Clock and weather display on LED matrix"
+  },
+  "rpi-signboard": {
+    "name": "RPi Signboard",
+    "unit": "rpi-signboard.service",
+    "deployPath": "/home/obrelix/rpi-signboard",
+    "repo": "https://github.com/Obrelix/rpi-signboard.git",
+    "configFile": "/home/obrelix/rpi-signboard/config.json",
+    "group": "led-panel",
+    "description": "User-typed messages on LED matrix"
   }
 }
