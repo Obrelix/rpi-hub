@@ -46,7 +46,30 @@
       "Bash(scp services/systemctl.js obrelix@192.168.1.201:/home/obrelix/rpi-hub/services/systemctl.js)",
       "Bash(scp routes/dashboard.js obrelix@192.168.1.201:/home/obrelix/rpi-hub/routes/dashboard.js)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(cp \"C:/Users/Obrelix/source/repos/Obrelix/rpi-radio/assets/fonts/DejaVuSans.ttf\" \"C:/Users/Obrelix/source/repos/Obrelix/rpi-signboard/assets/fonts/DejaVuSans.ttf\")",
+      "Bash(cp \"C:/Users/Obrelix/source/repos/Obrelix/rpi-radio/LICENSE\" \"C:/Users/Obrelix/source/repos/Obrelix/rpi-signboard/LICENSE\")",
+      "Bash(curl -s -o /tmp/dashboard.html -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /dev/null -w \"widget.js %{http_code} %{size_download}b\\\\n\" http://localhost:3000/js/signboard-widget.js)",
+      "Bash(curl -s http://localhost:3000/css/style.css)",
+      "Bash(ssh -o ConnectTimeout=5 -o BatchMode=yes obrelix@192.168.1.201 \"hostname && uname -a && uptime\")",
+      "Bash(ssh obrelix@192.168.1.201 \"systemctl is-active rpi-hub rpi-radio voidex maze-battlegrounds rpi-signboard 2>&1; echo '---'; ls /home/obrelix/ 2>&1; echo '---'; ls /home/obrelix/rpi-rgb-led-matrix/bindings/python 2>/dev/null | head -5; echo '---'; ls /home/obrelix/rpi-hub/services.json 2>&1\")",
+      "Bash(tar czf:*)",
+      "Bash(ssh obrelix@192.168.1.201 \"mkdir -p /home/obrelix/rpi-signboard && cd /home/obrelix/rpi-signboard && tar xzf - && ls -la\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-signboard && find . -type f | grep -v assets | sort && echo '---'; ls assets/fonts/\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-signboard && sudo bash install.sh 2>&1\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-hub && tar xzf - && echo '---' && md5sum services.json sockets/signboard.js sockets/index.js public/js/signboard-widget.js views/dashboard.ejs public/css/style.css\")",
+      "Bash(ssh obrelix@192.168.1.201 \"sudo systemctl restart rpi-hub && sleep 2 && systemctl is-active rpi-hub && echo '---logs---' && sudo journalctl -u rpi-hub -n 20 --no-pager\")",
+      "Bash(ssh obrelix@192.168.1.201 \"sleep 2 && systemctl is-active rpi-hub && curl -s -o /dev/null -w 'HTTP %{http_code}\\\\n' http://localhost:3000/ && sudo journalctl -u rpi-hub -n 10 --no-pager\")",
+      "Bash(ssh obrelix@192.168.1.201 \"curl -s http://localhost:3000/ | grep -c 'signboard-widget' && echo '---' && systemctl is-enabled rpi-signboard && systemctl is-active rpi-signboard && echo '---' && systemctl cat rpi-signboard.service | head -20\")",
+      "Bash(ssh obrelix@192.168.1.201 \"systemctl cat rpi-signboard.service; echo '---'; cd /home/obrelix/rpi-signboard && python3 -c 'import main; from constants import DEFAULT_LED_COLS; from config import Config; from message_state import MessageState; from ipc.socket_handler import SocketHandler; print\\(\\\\\"import OK, LED_COLS=\\\\\", DEFAULT_LED_COLS\\)'\")",
+      "Bash(ssh obrelix@192.168.1.201 \"ls -ld /home/obrelix /home/obrelix/rpi-signboard /home/obrelix/rpi-signboard/assets /home/obrelix/rpi-signboard/assets/fonts /home/obrelix/rpi-signboard/assets/fonts/DejaVuSans.ttf; echo '---'; sudo -u daemon stat /home/obrelix/rpi-signboard/assets/fonts/DejaVuSans.ttf 2>&1\")",
+      "Bash(ssh obrelix@192.168.1.201 \"sudo systemctl stop rpi-signboard && systemctl is-active rpi-signboard 2>&1 || true\")",
+      "Bash(scp \"C:/Users/Obrelix/source/repos/Obrelix/rpi-signboard/main.py\" obrelix@192.168.1.201:/home/obrelix/rpi-signboard/main.py)",
+      "Bash(ssh obrelix@192.168.1.201 \"md5sum /home/obrelix/rpi-signboard/main.py\")",
+      "Bash(ssh obrelix@192.168.1.201 \"sudo systemctl reset-failed rpi-signboard; sudo systemctl start rpi-signboard && sleep 3 && systemctl is-active rpi-signboard && echo '---logs---' && sudo journalctl -u rpi-signboard -n 20 --no-pager\")",
+      "Bash(ssh obrelix@192.168.1.201 \"systemctl is-active rpi-signboard; echo '---recent logs---'; sudo journalctl -u rpi-signboard --since '30 seconds ago' --no-pager; echo '---hub logs---'; sudo journalctl -u rpi-hub --since '30 seconds ago' --no-pager | tail -10\")"
     ]
   }
 }
