@@ -81,6 +81,14 @@ test('GET / returns dashboard with service names', async () => {
   expect(res.body).toContain('Voidex');
 });
 
+test('GET / renders signboard widget and includes signboard service', async () => {
+  const res = await get('/');
+  expect(res.status).toBe(200);
+  expect(res.body).toContain('signboard-widget');
+  expect(res.body).toContain('signboard-widget.js');
+  expect(res.body).toContain('RPi Signboard');
+});
+
 test('GET /logs returns logs page', async () => {
   const res = await get('/logs');
   expect(res.status).toBe(200);
