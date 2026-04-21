@@ -69,7 +69,31 @@
       "Bash(scp \"C:/Users/Obrelix/source/repos/Obrelix/rpi-signboard/main.py\" obrelix@192.168.1.201:/home/obrelix/rpi-signboard/main.py)",
       "Bash(ssh obrelix@192.168.1.201 \"md5sum /home/obrelix/rpi-signboard/main.py\")",
       "Bash(ssh obrelix@192.168.1.201 \"sudo systemctl reset-failed rpi-signboard; sudo systemctl start rpi-signboard && sleep 3 && systemctl is-active rpi-signboard && echo '---logs---' && sudo journalctl -u rpi-signboard -n 20 --no-pager\")",
-      "Bash(ssh obrelix@192.168.1.201 \"systemctl is-active rpi-signboard; echo '---recent logs---'; sudo journalctl -u rpi-signboard --since '30 seconds ago' --no-pager; echo '---hub logs---'; sudo journalctl -u rpi-hub --since '30 seconds ago' --no-pager | tail -10\")"
+      "Bash(ssh obrelix@192.168.1.201 \"systemctl is-active rpi-signboard; echo '---recent logs---'; sudo journalctl -u rpi-signboard --since '30 seconds ago' --no-pager; echo '---hub logs---'; sudo journalctl -u rpi-hub --since '30 seconds ago' --no-pager | tail -10\")",
+      "Read(//c/Users/Obrelix/source/repos/Obrelix/rpi-oled/**)",
+      "Bash(git -C \"C:/Users/Obrelix/source/repos/Obrelix/rpi-oled\" log --oneline -5)",
+      "Bash(git -C \"C:/Users/Obrelix/source/repos/Obrelix/rpi-oled\" branch)",
+      "Bash(python -m pytest)",
+      "Bash(python3 -m pytest)",
+      "Bash(py3 -m pytest)",
+      "Bash(git -C \"C:/Users/Obrelix/source/repos/Obrelix/rpi-hub\" status)",
+      "Bash(python -m pytest --collect-only)",
+      "Bash(git -C /c/Users/Obrelix/source/repos/Obrelix/rpi-oled diff 0186912..1b75868 --name-only)",
+      "Bash(python -m pytest tests/test_stats.py -v)",
+      "Bash(python3 -m pytest tests/test_stats.py -v)",
+      "Bash(python -m pytest tests/test_host.py -v)",
+      "Bash(python -m pytest tests/test_actions.py -v)",
+      "Bash(python -m pytest -v)",
+      "Bash(python3 -c \"import subprocess; help\\(subprocess.TimeoutExpired\\)\")",
+      "Bash(ls *.toml *.cfg *.ini setup.py)",
+      "Bash(ls .flake8 .pylintrc .ruff.toml)",
+      "Bash(python -m pytest tests/test_state.py -v)",
+      "Bash(python -m pytest tests/test_renderer.py -v)",
+      "Bash(python3 -m pytest tests/test_renderer.py -v)",
+      "Bash(npx --yes jest --verbose)",
+      "Bash(npx --no-install jest --verbose)",
+      "Bash(python3 -m json.tool)",
+      "Bash(ssh -o ConnectTimeout=5 -o BatchMode=yes obrelix@192.168.1.201 \"echo connected; uname -a; ls /home/obrelix/\")"
     ]
   }
 }
