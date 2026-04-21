@@ -34,5 +34,14 @@
     "configFile": "/home/obrelix/rpi-signboard/config.json",
     "group": "led-panel",
     "description": "User-typed messages on LED matrix"
+  },
+  "rpi-oled": {
+    "name": "RPi OLED",
+    "unit": "rpi-oled.service",
+    "deployPath": "/home/obrelix/rpi-oled",
+    "repo": "https://github.com/Obrelix/rpi-oled.git",
+    "configFile": "/home/obrelix/rpi-oled/config.py",
+    "group": null,
+    "description": "1.3\" OLED status display + rotary encoder"
   }
 }
