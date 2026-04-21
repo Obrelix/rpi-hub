@@ -93,7 +93,21 @@
       "Bash(npx --yes jest --verbose)",
       "Bash(npx --no-install jest --verbose)",
       "Bash(python3 -m json.tool)",
-      "Bash(ssh -o ConnectTimeout=5 -o BatchMode=yes obrelix@192.168.1.201 \"echo connected; uname -a; ls /home/obrelix/\")"
+      "Bash(ssh -o ConnectTimeout=5 -o BatchMode=yes obrelix@192.168.1.201 \"echo connected; uname -a; ls /home/obrelix/\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-hub && git fetch origin && git log HEAD..origin/master --oneline\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-hub && git pull origin master 2>&1 && echo '---INSTALL---' && npm install --production 2>&1 | tail -10 && echo '---RESTART---' && sudo systemctl restart rpi-hub && echo '---STATUS---' && sudo systemctl is-active rpi-hub\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-hub && echo '=== STATUS ===' && git status --short | head -40 && echo && echo '=== SERVICES.JSON DIFF ===' && git diff services.json\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-hub && echo '=== CLAUDE.md diff vs origin ===' && diff <\\(cat CLAUDE.md 2>/dev/null\\) <\\(git show origin/master:CLAUDE.md 2>/dev/null\\) | head -20 && echo && echo '=== app.js diff vs origin ===' && git diff origin/master -- app.js | head -30\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-hub && echo '=== Files that differ from origin/master ===' && git diff origin/master --name-only && echo '=== Done ==='\")",
+      "Bash(ssh obrelix@192.168.1.201 'cd /home/obrelix/rpi-hub && for f in CLAUDE.md README.md services.json public/js/stations.js routes/stations.js services/wifi.js .claude/settings.local.json; do if [ -f \"$f\" ]; then d=$\\(diff <\\(cat \"$f\" 2>/dev/null\\) <\\(git show origin/master:\"$f\" 2>/dev/null\\) | head -3\\); if [ -z \"$d\" ]; then echo \"MATCH: $f\"; else echo \"DIFFERS: $f\"; fi; else echo \"MISSING: $f\"; fi; done')",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-hub && git reset --hard origin/master 2>&1 && echo '---STATUS---' && git status && echo '---VERIFY-RPI-OLED-IN-SERVICES---' && grep -A1 'rpi-oled' services.json\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-hub && npm install --production 2>&1 | tail -5 && echo '---RESTART---' && sudo systemctl restart rpi-hub && sleep 2 && sudo systemctl is-active rpi-hub && echo '---TAIL---' && sudo journalctl -u rpi-hub -n 10 --no-pager\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix && git clone https://github.com/Obrelix/rpi-oled.git 2>&1 && ls -la rpi-oled/\")",
+      "Bash(ssh obrelix@192.168.1.201 \"cd /home/obrelix/rpi-oled && sudo bash install.sh 2>&1 | tail -40\")",
+      "Bash(ssh obrelix@192.168.1.201 \"sleep 5 && sudo systemctl status rpi-oled --no-pager | head -15 && echo '---LOGS---' && sudo journalctl -u rpi-oled -n 30 --no-pager\")",
+      "Bash(ssh obrelix@192.168.1.201 \"sed -i 's/include-system-site-packages = false/include-system-site-packages = true/' /home/obrelix/rpi-oled/venv/pyvenv.cfg && echo '---pyvenv.cfg now:---' && cat /home/obrelix/rpi-oled/venv/pyvenv.cfg\")",
+      "Bash(ssh obrelix@192.168.1.201 \"sudo sed -i 's/include-system-site-packages = false/include-system-site-packages = true/' /home/obrelix/rpi-oled/venv/pyvenv.cfg && echo '---pyvenv.cfg---' && sudo cat /home/obrelix/rpi-oled/venv/pyvenv.cfg\")",
+      "Bash(ssh obrelix@192.168.1.201 *)"
     ]
   }
 }
