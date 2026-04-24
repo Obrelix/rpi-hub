@@ -79,6 +79,7 @@ test('GET / returns dashboard with service names', async () => {
   expect(res.body).toContain('RPi Hub');
   expect(res.body).toContain('Maze Battlegrounds');
   expect(res.body).toContain('Voidex');
+  expect(res.body).toContain('RPi Podcast');
 });
 
 test('GET / renders signboard widget and includes signboard service', async () => {

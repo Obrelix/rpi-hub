@@ -35,6 +35,15 @@
     "group": "led-panel",
     "description": "User-typed messages on LED matrix"
   },
+  "rpi-podcast": {
+    "name": "RPi Podcast",
+    "unit": "rpi-podcast.service",
+    "deployPath": "/home/obrelix/rpi-podcast",
+    "repo": "https://github.com/Obrelix/rpi-podcast.git",
+    "configFile": "/home/obrelix/rpi-podcast/config.json",
+    "group": "led-panel",
+    "description": "Podcast player with LED title scroller"
+  },
   "rpi-oled": {
     "name": "RPi OLED",
     "unit": "rpi-oled.service",
