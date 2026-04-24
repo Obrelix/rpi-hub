@@ -1,4 +1,9 @@
 const RssService = require('../../services/rss');
+const fs = require('fs');
+const path = require('path');
+function fixture(name) {
+  return fs.readFileSync(path.join(__dirname, '..', 'fixtures', 'rss', name), 'utf-8');
+}
 
 describe('RssService.validateUrl', () => {
   const svc = new RssService();
@@ -97,5 +102,36 @@ describe('RssService.parseDuration', () => {
 
   test('returns null for too many colon-parts', () => {
     expect(svc.parseDuration('1:2:3:4')).toBeNull();
+  });
+});
+
+describe('RssService.parseFeed (RSS 2.0)', () => {
+  const svc = new RssService();
+
+  test('parses valid RSS 2.0 feed with audio enclosures', () => {
+    const result = svc.parseFeed(fixture('rss2-valid.xml'));
+    expect(result.show).toBe('Software Unscripted');
+    expect(result.episodes).toHaveLength(2);
+    expect(result.episodes[0]).toEqual({
+      title: 'Ep 142: Rust vs Zig',
+      url: 'https://example.com/ep142.mp3',
+      duration: 5412,
+      pubDate: 'Mon, 10 Mar 2025 12:00:00 GMT',
+    });
+    expect(result.episodes[1].duration).toBe(3600);
+  });
+
+  test('returns empty episode list for feed with no audio enclosures', () => {
+    const result = svc.parseFeed(fixture('rss2-no-audio.xml'));
+    expect(result.show).toBe('News Blog');
+    expect(result.episodes).toEqual([]);
+  });
+
+  test('throws on malformed XML', () => {
+    expect(() => svc.parseFeed('<not-xml')).toThrow();
+  });
+
+  test('throws on XML that is not an RSS or Atom feed', () => {
+    expect(() => svc.parseFeed('<?xml version="1.0"?><root><child/></root>')).toThrow(/RSS or Atom/);
   });
 });
