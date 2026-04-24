@@ -1538,3 +1538,69 @@ a:hover {
   font-size: 11px;
   padding: 2px 8px;
 }
+
+/* ── Collapsible widget support (Radio + Signboard) ─────────────── */
+
+.radio-header,
+.signboard-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.widget-collapse-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: 8px;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.widget-collapse-toggle:hover {
+  color: var(--text-primary);
+}
+
+.radio-widget:not(.collapsed) .widget-collapse-toggle,
+.signboard-widget:not(.collapsed) .widget-collapse-toggle {
+  transform: rotate(0deg);
+}
+
+.radio-widget.collapsed .widget-collapse-toggle,
+.signboard-widget.collapsed .widget-collapse-toggle {
+  transform: rotate(-90deg);
+}
+
+.widget-summary {
+  display: none;
+  padding: 6px 10px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.radio-widget.collapsed .widget-summary,
+.signboard-widget.collapsed .widget-summary {
+  display: block;
+}
+
+.radio-widget.collapsed .widget-body,
+.signboard-widget.collapsed .widget-body {
+  display: none;
+}
+
+.radio-widget.collapsed .radio-header,
+.signboard-widget.collapsed .signboard-header {
+  margin-bottom: 8px;
+}
+
+.radio-widget.collapsed,
+.signboard-widget.collapsed {
+  margin-bottom: 12px;
+}
