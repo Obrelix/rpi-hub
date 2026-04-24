@@ -41,103 +41,111 @@
 
 <!-- ── Radio Control Widget ───────────────────────────────────────── -->
 <div class="radio-widget" id="radio-widget">
-  <div class="radio-header">
+  <div class="radio-header" role="button" tabindex="0" aria-expanded="false">
     <h3>RPi Radio</h3>
     <span class="radio-status-badge stopped">Offline</span>
+    <button class="widget-collapse-toggle" type="button" aria-label="Toggle widget" aria-expanded="false">&#x25BE;</button>
   </div>
-  <div class="radio-now-playing">
-    <div class="radio-station-name">No station</div>
-    <div class="radio-track-title"></div>
-    <div class="radio-bitrate"></div>
-  </div>
-  <div class="radio-transport">
-    <button class="radio-prev" title="Previous">&#x23EE;</button>
-    <button class="radio-play-pause" title="Play/Pause">&#x25B6;</button>
-    <button class="radio-next" title="Next">&#x23ED;</button>
-  </div>
-  <div class="radio-volume-row">
-    <label>Volume</label>
-    <input type="range" class="radio-volume" min="0" max="150" value="70">
-    <span class="radio-volume-label">70%</span>
-  </div>
-  <div class="radio-selectors">
-    <div>
-      <label>Station</label>
-      <div class="radio-station-row">
-        <select class="radio-station-select"></select>
-      </div>
+  <div class="widget-summary radio-summary"></div>
+  <div class="widget-body">
+    <div class="radio-now-playing">
+      <div class="radio-station-name">No station</div>
+      <div class="radio-track-title"></div>
+      <div class="radio-bitrate"></div>
     </div>
-    <div>
-      <label>Mode</label>
-      <select class="radio-mode-select">
-        <option value="spectrum">Spectrum</option>
-        <option value="ticker">Ticker</option>
-        <option value="blank">Blank</option>
-        <option value="equalizer">Equalizer</option>
-        <option value="waveform">Waveform</option>
-      </select>
+    <div class="radio-transport">
+      <button class="radio-prev" title="Previous">&#x23EE;</button>
+      <button class="radio-play-pause" title="Play/Pause">&#x25B6;</button>
+      <button class="radio-next" title="Next">&#x23ED;</button>
+    </div>
+    <div class="radio-volume-row">
+      <label>Volume</label>
+      <input type="range" class="radio-volume" min="0" max="150" value="70">
+      <span class="radio-volume-label">70%</span>
+    </div>
+    <div class="radio-selectors">
+      <div>
+        <label>Station</label>
+        <div class="radio-station-row">
+          <select class="radio-station-select"></select>
+        </div>
+      </div>
+      <div>
+        <label>Mode</label>
+        <select class="radio-mode-select">
+          <option value="spectrum">Spectrum</option>
+          <option value="ticker">Ticker</option>
+          <option value="blank">Blank</option>
+          <option value="equalizer">Equalizer</option>
+          <option value="waveform">Waveform</option>
+        </select>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- ── Signboard Widget ──────────────────────────────────────────── -->
 <div class="signboard-widget" id="signboard-widget">
-  <div class="signboard-header">
+  <div class="signboard-header" role="button" tabindex="0" aria-expanded="false">
     <h3>Signboard</h3>
     <span class="signboard-status-badge stopped">Offline</span>
+    <button class="widget-collapse-toggle" type="button" aria-label="Toggle widget" aria-expanded="false">&#x25BE;</button>
   </div>
-  <div class="signboard-current"></div>
+  <div class="widget-summary signboard-summary"></div>
+  <div class="widget-body">
+    <div class="signboard-current"></div>
 
-  <textarea class="signboard-text" rows="2" placeholder="Type a message and press Enter\u2026" maxlength="500"></textarea>
+    <textarea class="signboard-text" rows="2" placeholder="Type a message and press Enter\u2026" maxlength="500"></textarea>
 
-  <div class="signboard-controls-row">
-    <div class="signboard-control">
-      <label>Color</label>
-      <div class="signboard-color-swatches"></div>
-      <input type="text" class="signboard-color-hex" value="#ffffff" maxlength="7">
-    </div>
-    <div class="signboard-control">
-      <label>Background</label>
-      <div class="signboard-bg-swatches"></div>
-      <input type="text" class="signboard-bg-hex" value="#000000" maxlength="7">
-    </div>
-  </div>
-
-  <div class="signboard-controls-row">
-    <div class="signboard-control">
-      <label>Size</label>
-      <div class="signboard-radios">
-        <label><input type="radio" name="signboard-size" value="small"> Small</label>
-        <label><input type="radio" name="signboard-size" value="medium" checked> Medium</label>
-        <label><input type="radio" name="signboard-size" value="large"> Large</label>
+    <div class="signboard-controls-row">
+      <div class="signboard-control">
+        <label>Color</label>
+        <div class="signboard-color-swatches"></div>
+        <input type="text" class="signboard-color-hex" value="#ffffff" maxlength="7">
+      </div>
+      <div class="signboard-control">
+        <label>Background</label>
+        <div class="signboard-bg-swatches"></div>
+        <input type="text" class="signboard-bg-hex" value="#000000" maxlength="7">
       </div>
     </div>
-    <div class="signboard-control">
-      <label>Mode</label>
-      <div class="signboard-radios">
-        <label><input type="radio" name="signboard-mode" value="scroll-once" checked> Scroll</label>
-        <label><input type="radio" name="signboard-mode" value="persist"> Persist</label>
-        <label><input type="radio" name="signboard-mode" value="loop"> Loop</label>
+
+    <div class="signboard-controls-row">
+      <div class="signboard-control">
+        <label>Size</label>
+        <div class="signboard-radios">
+          <label><input type="radio" name="signboard-size" value="small"> Small</label>
+          <label><input type="radio" name="signboard-size" value="medium" checked> Medium</label>
+          <label><input type="radio" name="signboard-size" value="large"> Large</label>
+        </div>
+      </div>
+      <div class="signboard-control">
+        <label>Mode</label>
+        <div class="signboard-radios">
+          <label><input type="radio" name="signboard-mode" value="scroll-once" checked> Scroll</label>
+          <label><input type="radio" name="signboard-mode" value="persist"> Persist</label>
+          <label><input type="radio" name="signboard-mode" value="loop"> Loop</label>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="signboard-speed-row">
-    <label>Speed</label>
-    <input type="range" class="signboard-speed" min="1" max="5" value="2">
-    <span class="signboard-speed-label">2</span>
-  </div>
+    <div class="signboard-speed-row">
+      <label>Speed</label>
+      <input type="range" class="signboard-speed" min="1" max="5" value="2">
+      <span class="signboard-speed-label">2</span>
+    </div>
 
-  <div class="signboard-actions">
-    <button class="btn btn-success btn-sm signboard-send">Send</button>
-    <button class="btn btn-secondary btn-sm signboard-clear">Clear Display</button>
-  </div>
+    <div class="signboard-actions">
+      <button class="btn btn-success btn-sm signboard-send">Send</button>
+      <button class="btn btn-secondary btn-sm signboard-clear">Clear Display</button>
+    </div>
 
-  <div class="signboard-history-header">
-    <span>Recent messages</span>
-    <button type="button" class="signboard-clear-history">Clear</button>
+    <div class="signboard-history-header">
+      <span>Recent messages</span>
+      <button type="button" class="signboard-clear-history">Clear</button>
+    </div>
+    <div class="signboard-history"></div>
   </div>
-  <div class="signboard-history"></div>
 </div>
 
 <!-- ── Services Grid ─────────────────────────────────────────────── -->
@@ -195,5 +203,6 @@
 </div>
 
 <%- include('partials/footer') %>
+<script src="/js/widget-collapse.js"></script>
 <script src="/js/radio-widget.js"></script>
 <script src="/js/signboard-widget.js"></script>
