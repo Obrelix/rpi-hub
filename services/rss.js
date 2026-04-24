@@ -1,5 +1,7 @@
 'use strict';
 
+const http = require('http');
+const https = require('https');
 const { URL } = require('url');
 const { XMLParser } = require('fast-xml-parser');
 
@@ -33,6 +35,8 @@ class RssService {
       if (a === 172 && b >= 16 && b <= 31) return null;
       if (a === 169 && b === 254) return null;
     }
+    // Reject IPv4-mapped IPv6 addresses (bypass attempt for private-range guards)
+    if (host.includes('::ffff:')) return null;
     return url;
   }
 
@@ -117,6 +121,60 @@ class RssService {
     if (typeof node === 'number' || typeof node === 'boolean') return String(node);
     if (typeof node === 'object' && node['#text'] != null) return String(node['#text']);
     return null;
+  }
+
+  /**
+   * Fetch an RSS/Atom feed and parse it.
+   *
+   * Security notes:
+   * - URL is validated via `validateUrl` (rejects non-http(s), loopback,
+   *   private IPv4 ranges, IPv4-mapped IPv6).
+   * - Fetch is bounded by `timeoutMs` (default 10s) and `maxBytes`
+   *   (default 5 MiB) to prevent resource exhaustion.
+   * - Known gap: DNS rebinding. `validateUrl` inspects the hostname
+   *   string, but DNS resolution happens inside `http.get` — an attacker-
+   *   controlled DNS server can return a public IP at validation time and
+   *   a private IP at fetch time. Mitigation would require resolving via
+   *   `dns.lookup` and passing the IP via the `lookup` option. Not
+   *   implemented here because the attack surface is narrow (LAN-only
+   *   hub, user-provided feed URLs) but worth revisiting if the hub is
+   *   ever exposed beyond the LAN.
+   */
+  fetchAndParse(rawUrl) {
+    return new Promise((resolve, reject) => {
+      const url = this.validateUrl(rawUrl);
+      if (!url) return reject(new Error('Invalid URL'));
+      const client = url.protocol === 'https:' ? https : http;
+      const req = client.get(url, (res) => {
+        if (res.statusCode !== 200) {
+          res.resume();
+          return reject(new Error('HTTP ' + res.statusCode));
+        }
+        const chunks = [];
+        let size = 0;
+        res.on('data', (chunk) => {
+          size += chunk.length;
+          if (size > this.maxBytes) {
+            req.destroy();
+            return reject(new Error('Feed too large'));
+          }
+          chunks.push(chunk);
+        });
+        res.on('end', () => {
+          try {
+            const xml = Buffer.concat(chunks).toString('utf-8');
+            resolve(this.parseFeed(xml));
+          } catch (e) {
+            reject(e);
+          }
+        });
+        res.on('error', reject);
+      });
+      req.on('error', reject);
+      req.setTimeout(this.timeoutMs, () => {
+        req.destroy(new Error('Fetch timeout'));
+      });
+    });
   }
 }
 

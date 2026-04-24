@@ -59,6 +59,14 @@ describe('RssService.validateUrl', () => {
   test('accepts a public IPv4', () => {
     expect(svc.validateUrl('http://8.8.8.8/feed')).not.toBeNull();
   });
+
+  test('rejects IPv4-mapped IPv6 loopback', () => {
+    expect(svc.validateUrl('http://[::ffff:127.0.0.1]/feed')).toBeNull();
+  });
+
+  test('rejects IPv4-mapped IPv6 private range', () => {
+    expect(svc.validateUrl('http://[::ffff:192.168.1.1]/feed')).toBeNull();
+  });
 });
 
 describe('RssService.parseDuration', () => {
