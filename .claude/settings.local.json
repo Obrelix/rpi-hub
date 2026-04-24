@@ -107,7 +107,14 @@
       "Bash(ssh obrelix@192.168.1.201 \"sleep 5 && sudo systemctl status rpi-oled --no-pager | head -15 && echo '---LOGS---' && sudo journalctl -u rpi-oled -n 30 --no-pager\")",
       "Bash(ssh obrelix@192.168.1.201 \"sed -i 's/include-system-site-packages = false/include-system-site-packages = true/' /home/obrelix/rpi-oled/venv/pyvenv.cfg && echo '---pyvenv.cfg now:---' && cat /home/obrelix/rpi-oled/venv/pyvenv.cfg\")",
       "Bash(ssh obrelix@192.168.1.201 \"sudo sed -i 's/include-system-site-packages = false/include-system-site-packages = true/' /home/obrelix/rpi-oled/venv/pyvenv.cfg && echo '---pyvenv.cfg---' && sudo cat /home/obrelix/rpi-oled/venv/pyvenv.cfg\")",
-      "Bash(ssh obrelix@192.168.1.201 *)"
+      "Bash(ssh obrelix@192.168.1.201 *)",
+      "PowerShell(cd C:\\\\Users\\\\Obrelix\\\\source\\\\repos\\\\Obrelix\\\\rpi-hub && node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose 2>&1 | Select-String -Pattern \"PASS|FAIL|✓|✕|×|●|SUITE|Tests:|Test Suites:\" | ForEach-Object { $_.Line })",
+      "PowerShell(cd C:\\\\Users\\\\Obrelix\\\\source\\\\repos\\\\Obrelix\\\\rpi-hub && node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose 2>&1 | Select-String -Pattern \"PASS|FAIL\" | ForEach-Object { $_.Line })",
+      "PowerShell(cd C:\\\\Users\\\\Obrelix\\\\source\\\\repos\\\\Obrelix\\\\rpi-hub && Start-Process -NoNewWindow -FilePath \"node\" -ArgumentList \"server.js\" -RedirectStandardOutput \"$env:TEMP\\\\rpi-hub-out.txt\" -RedirectStandardError \"$env:TEMP\\\\rpi-hub-err.txt\"; Start-Sleep -Seconds 3; Write-Host \"Server started, waiting done\")",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:3000/\" -UseBasicParsing -OutFile \"$env:TEMP\\\\dash.html\" 2>&1; Write-Host \"Download done\"; Get-Item \"$env:TEMP\\\\dash.html\" | Select-Object Length)",
+      "PowerShell(Get-Item \"$env:TEMP\\\\dash.html\" | Select-Object Length)",
+      "PowerShell($html = Get-Content \"$env:TEMP\\\\dash.html\" -Raw; Write-Host \"File length: $\\($html.Length\\)\")",
+      "PowerShell(Stop-Process -Name \"node\" -ErrorAction SilentlyContinue)"
     ]
   }
 }
