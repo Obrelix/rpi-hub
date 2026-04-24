@@ -4,6 +4,7 @@ const Registry = require('./services/registry');
 const Systemctl = require('./services/systemctl');
 const Stats    = require('./services/stats');
 const WifiService = require('./services/wifi');
+const RssService = require('./services/rss');
 
 const dashboardRouter = require('./routes/dashboard');
 const logsRouter      = require('./routes/logs');
@@ -11,6 +12,7 @@ const systemRouter    = require('./routes/system');
 const deployRouter    = require('./routes/deploy');
 const settingsRouter  = require('./routes/settings');
 const stationsRouter  = require('./routes/stations');
+const podcastsRouter  = require('./routes/podcasts');
 
 function createApp() {
   const app = express();
@@ -31,6 +33,7 @@ function createApp() {
   app.set('systemctl', systemctl);
   app.set('stats',     stats);
   app.set('wifi',      new WifiService());
+  app.set('rss',       new RssService());
 
   // --- Health check ------------------------------------------------
   app.get('/health', (req, res) => {
@@ -43,6 +46,7 @@ function createApp() {
   app.use('/', systemRouter);
   app.use('/', deployRouter);
   app.use('/', stationsRouter);
+  app.use('/', podcastsRouter);
   app.use('/', settingsRouter);
 
   // --- 404 handler -------------------------------------------------
