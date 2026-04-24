@@ -27,6 +27,22 @@ class RssService {
     }
     return url;
   }
+
+  parseDuration(raw) {
+    if (raw == null) return null;
+    const s = String(raw).trim();
+    if (!s) return null;
+    if (/^\d+$/.test(s)) return parseInt(s, 10);
+    const parts = s.split(':').map(p => p.trim());
+    if (parts.length < 2 || parts.length > 3) return null;
+    if (parts.some(p => !/^\d+$/.test(p))) return null;
+    if (parts.length === 3) {
+      const [h, m, sec] = parts.map(n => parseInt(n, 10));
+      return h * 3600 + m * 60 + sec;
+    }
+    const [m, sec] = parts.map(n => parseInt(n, 10));
+    return m * 60 + sec;
+  }
 }
 
 module.exports = RssService;

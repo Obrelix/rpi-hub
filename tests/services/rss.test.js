@@ -55,3 +55,47 @@ describe('RssService.validateUrl', () => {
     expect(svc.validateUrl('http://8.8.8.8/feed')).not.toBeNull();
   });
 });
+
+describe('RssService.parseDuration', () => {
+  const svc = new RssService();
+
+  test('parses plain seconds string', () => {
+    expect(svc.parseDuration('5412')).toBe(5412);
+  });
+
+  test('parses HH:MM:SS', () => {
+    expect(svc.parseDuration('1:30:12')).toBe(5412);
+  });
+
+  test('parses MM:SS', () => {
+    expect(svc.parseDuration('45:30')).toBe(45 * 60 + 30);
+  });
+
+  test('parses with surrounding whitespace', () => {
+    expect(svc.parseDuration('  1:30:12  ')).toBe(5412);
+  });
+
+  test('returns null for null input', () => {
+    expect(svc.parseDuration(null)).toBeNull();
+  });
+
+  test('returns null for undefined input', () => {
+    expect(svc.parseDuration(undefined)).toBeNull();
+  });
+
+  test('returns null for empty string', () => {
+    expect(svc.parseDuration('')).toBeNull();
+  });
+
+  test('returns null for garbage', () => {
+    expect(svc.parseDuration('about an hour')).toBeNull();
+  });
+
+  test('returns null for mixed invalid format', () => {
+    expect(svc.parseDuration('1:xx:30')).toBeNull();
+  });
+
+  test('returns null for too many colon-parts', () => {
+    expect(svc.parseDuration('1:2:3:4')).toBeNull();
+  });
+});
