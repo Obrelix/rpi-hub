@@ -140,6 +140,8 @@
     } else {
       currentLbl.textContent = '';
     }
+
+    updateSummary();
   }
 
   function renderHistory() {
@@ -149,6 +151,7 @@
       empty.className = 'signboard-history-empty';
       empty.textContent = 'No recent messages';
       historyList.appendChild(empty);
+      updateSummary();
       return;
     }
     history.forEach(function (h) {
@@ -181,6 +184,21 @@
       row.appendChild(resend);
       historyList.appendChild(row);
     });
+    updateSummary();
+  }
+
+  function updateSummary() {
+    if (typeof window.setWidgetSummary !== 'function') return;
+    let text;
+    if (!sbState.connected) {
+      text = 'Offline';
+    } else if (history.length > 0 && history[0].text) {
+      const msg = history[0].text;
+      text = msg.length > 60 ? msg.slice(0, 60) + '\u2026' : msg;
+    } else {
+      text = 'No recent messages';
+    }
+    window.setWidgetSummary('#signboard-widget', text);
   }
 
   // ---- Socket.io listeners --------------------------------------------
