@@ -1605,3 +1605,9 @@ a:hover {
 .signboard-widget.collapsed {
   margin-bottom: 12px;
 }
+
+/* Keep the collapse toggle active even when the service is offline */
+.radio-widget.radio-offline .radio-header,
+.signboard-widget.signboard-offline .signboard-header {
+  pointer-events: auto;
+}

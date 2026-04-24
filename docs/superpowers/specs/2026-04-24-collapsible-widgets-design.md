@@ -142,8 +142,8 @@ The mapping of widget → storage key → summary selector lives in this one fil
 
 ```js
 const WIDGETS = [
-  { root: '#radio-widget',     header: '.radio-header',     storageKey: 'widget-collapsed:radio',     summary: '.radio-summary' },
-  { root: '#signboard-widget', header: '.signboard-header', storageKey: 'widget-collapsed:signboard', summary: '.signboard-summary' }
+  { root: '#radio-widget',     header: '.radio-header',     storageKey: 'widget-collapsed:radio' },
+  { root: '#signboard-widget', header: '.signboard-header', storageKey: 'widget-collapsed:signboard' }
 ];
 ```
 
