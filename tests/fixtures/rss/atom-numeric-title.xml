@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>2024</title>
+  <updated>2025-03-10T12:00:00Z</updated>
+  <entry>
+    <title>500</title>
+    <published>2025-03-10T12:00:00Z</published>
+    <link rel="enclosure" type="audio/mpeg" href="https://example.com/500.mp3"/>
+  </entry>
+</feed>

@@ -143,3 +143,33 @@ describe('RssService.parseFeed (RSS 2.0)', () => {
     expect(result.episodes[0].url).toBe('https://example.com/500.mp3');
   });
 });
+
+describe('RssService.parseFeed (Atom)', () => {
+  const svc = new RssService();
+
+  test('parses Atom feed with audio enclosure links', () => {
+    const result = svc.parseFeed(fixture('atom-valid.xml'));
+    expect(result.show).toBe('Atom Podcast');
+    expect(result.episodes).toHaveLength(2);
+    expect(result.episodes[0]).toEqual({
+      title: 'Atom Ep 1',
+      url: 'https://example.com/atom-ep1.mp3',
+      duration: null,
+      pubDate: '2025-03-10T12:00:00Z',
+    });
+    expect(result.episodes[1]).toEqual({
+      title: 'Atom Ep 2',
+      url: 'https://example.com/atom-ep2.mp3',
+      duration: null,
+      pubDate: '2025-03-03T12:00:00Z',
+    });
+  });
+
+  test('preserves numeric-looking text as string (Atom feed + entry titles)', () => {
+    const result = svc.parseFeed(fixture('atom-numeric-title.xml'));
+    expect(result.show).toBe('2024');
+    expect(result.episodes).toHaveLength(1);
+    expect(result.episodes[0].title).toBe('500');
+    expect(result.episodes[0].url).toBe('https://example.com/500.mp3');
+  });
+});

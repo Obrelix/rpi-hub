@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Atom Podcast</title>
+  <updated>2025-03-10T12:00:00Z</updated>
+  <entry>
+    <title>Atom Ep 1</title>
+    <published>2025-03-10T12:00:00Z</published>
+    <link rel="enclosure" type="audio/mpeg" href="https://example.com/atom-ep1.mp3"/>
+  </entry>
+  <entry>
+    <title>Atom Ep 2</title>
+    <updated>2025-03-03T12:00:00Z</updated>
+    <link rel="enclosure" type="audio/mpeg" href="https://example.com/atom-ep2.mp3"/>
+    <link rel="alternate" type="text/html" href="https://example.com/atom-ep2.html"/>
+  </entry>
+</feed>

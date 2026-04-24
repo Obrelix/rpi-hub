@@ -89,8 +89,26 @@ class RssService {
   }
 
   parseAtom(feed) {
-    // Stub — filled in Task 6
-    throw new Error('Not an RSS or Atom feed');
+    const show = this._textOf(feed.title) || '';
+    const rawEntries = feed.entry;
+    const entries = Array.isArray(rawEntries) ? rawEntries : (rawEntries ? [rawEntries] : []);
+    const episodes = [];
+    for (const entry of entries) {
+      const rawLinks = entry.link;
+      const links = Array.isArray(rawLinks) ? rawLinks : (rawLinks ? [rawLinks] : []);
+      const audio = links.find(l =>
+        l && l.rel === 'enclosure' && typeof l.type === 'string' && l.type.startsWith('audio/') && l.href
+      );
+      if (!audio) continue;
+      const pubDate = entry.published || entry.updated || null;
+      episodes.push({
+        title: this._textOf(entry.title) || '(untitled)',
+        url: String(audio.href),
+        duration: null,
+        pubDate: pubDate ? String(pubDate) : null,
+      });
+    }
+    return { show, episodes };
   }
 
   _textOf(node) {
