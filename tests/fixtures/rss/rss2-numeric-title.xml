@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>2024</title>
+    <item>
+      <title>500</title>
+      <pubDate>Mon, 10 Mar 2025 12:00:00 GMT</pubDate>
+      <enclosure url="https://example.com/500.mp3" type="audio/mpeg"/>
+    </item>
+  </channel>
+</rss>

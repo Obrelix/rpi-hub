@@ -11,6 +11,8 @@ class RssService {
       ignoreAttributes: false,
       attributeNamePrefix: '',
       textNodeName: '#text',
+      parseTagValue: false,
+      parseAttributeValue: false,
     });
   }
 
@@ -94,7 +96,8 @@ class RssService {
   _textOf(node) {
     if (node == null) return null;
     if (typeof node === 'string') return node;
-    if (typeof node === 'object' && node['#text']) return String(node['#text']);
+    if (typeof node === 'number' || typeof node === 'boolean') return String(node);
+    if (typeof node === 'object' && node['#text'] != null) return String(node['#text']);
     return null;
   }
 }

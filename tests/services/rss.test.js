@@ -134,4 +134,12 @@ describe('RssService.parseFeed (RSS 2.0)', () => {
   test('throws on XML that is not an RSS or Atom feed', () => {
     expect(() => svc.parseFeed('<?xml version="1.0"?><root><child/></root>')).toThrow(/RSS or Atom/);
   });
+
+  test('preserves numeric-looking text as string (show title and episode title)', () => {
+    const result = svc.parseFeed(fixture('rss2-numeric-title.xml'));
+    expect(result.show).toBe('2024');
+    expect(result.episodes).toHaveLength(1);
+    expect(result.episodes[0].title).toBe('500');
+    expect(result.episodes[0].url).toBe('https://example.com/500.mp3');
+  });
 });
