@@ -2,6 +2,7 @@ const { setupStatsBroadcast } = require('./stats');
 const { setupLogsSocket } = require('./logs');
 const setupRadioSocket = require('./radio');
 const setupSignboardSocket = require('./signboard');
+const setupPodcastSocket = require('./podcast');
 
 function setupSockets(io, services, config) {
   const statsBroadcast = setupStatsBroadcast(io, services.stats, config.statsIntervalMs);
@@ -16,6 +17,7 @@ function setupSockets(io, services, config) {
   setupLogsSocket(io, services.registry);
   setupRadioSocket(io);
   setupSignboardSocket(io);
+  setupPodcastSocket(io);
 
   statsBroadcast.start();
   return { statsBroadcast };
