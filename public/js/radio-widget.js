@@ -44,12 +44,31 @@
     if (radioState.station_index !== null) {
       stationSelect.value = radioState.station_index;
     }
+    updateSummary();
   }
 
   function updateNowPlaying() {
     stationName.textContent = nowPlaying.station_name || 'No station';
     trackTitle.textContent = nowPlaying.track_title || '';
     bitrateEl.textContent = nowPlaying.bitrate || '';
+    updateSummary();
+  }
+
+  function updateSummary() {
+    if (typeof window.setWidgetSummary !== 'function') return;
+    let text;
+    if (!radioState.connected) {
+      text = 'Offline';
+    } else if (radioState.is_playing && nowPlaying.station_name && nowPlaying.track_title) {
+      text = '\u266A ' + nowPlaying.station_name + ' \u2014 ' + nowPlaying.track_title;
+    } else if (radioState.is_playing && nowPlaying.station_name) {
+      text = '\u266A ' + nowPlaying.station_name;
+    } else if (radioState.is_playing) {
+      text = 'Playing';
+    } else {
+      text = 'Paused';
+    }
+    window.setWidgetSummary('#radio-widget', text);
   }
 
   function updateStationList() {
