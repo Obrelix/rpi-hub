@@ -114,7 +114,12 @@
       "PowerShell(Invoke-WebRequest -Uri \"http://localhost:3000/\" -UseBasicParsing -OutFile \"$env:TEMP\\\\dash.html\" 2>&1; Write-Host \"Download done\"; Get-Item \"$env:TEMP\\\\dash.html\" | Select-Object Length)",
       "PowerShell(Get-Item \"$env:TEMP\\\\dash.html\" | Select-Object Length)",
       "PowerShell($html = Get-Content \"$env:TEMP\\\\dash.html\" -Raw; Write-Host \"File length: $\\($html.Length\\)\")",
-      "PowerShell(Stop-Process -Name \"node\" -ErrorAction SilentlyContinue)"
+      "PowerShell(Stop-Process -Name \"node\" -ErrorAction SilentlyContinue)",
+      "Bash(git diff-tree *)",
+      "Bash(npm install *)",
+      "Bash(npm ls *)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs"
     ]
   }
 }
