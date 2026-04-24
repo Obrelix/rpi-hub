@@ -314,13 +314,11 @@ Create `public/js/widget-collapse.js` with the following content:
     {
       root: '#radio-widget',
       header: '.radio-header',
-      summary: '.radio-summary',
       storageKey: 'widget-collapsed:radio'
     },
     {
       root: '#signboard-widget',
       header: '.signboard-header',
-      summary: '.signboard-summary',
       storageKey: 'widget-collapsed:signboard'
     }
   ];
@@ -370,11 +368,7 @@ Create `public/js/widget-collapse.js` with the following content:
       setStored(cfg.storageKey, collapsed);
     }
 
-    header.addEventListener('click', function (e) {
-      // Don't toggle if the user clicked an interactive control inside the header
-      // (status badge is fine; anything that would normally emit a click is OK too).
-      toggle();
-    });
+    header.addEventListener('click', toggle);
 
     header.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') {

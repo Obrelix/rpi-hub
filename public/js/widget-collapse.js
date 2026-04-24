@@ -13,13 +13,11 @@
     {
       root: '#radio-widget',
       header: '.radio-header',
-      summary: '.radio-summary',
       storageKey: 'widget-collapsed:radio'
     },
     {
       root: '#signboard-widget',
       header: '.signboard-header',
-      summary: '.signboard-summary',
       storageKey: 'widget-collapsed:signboard'
     }
   ];
@@ -69,9 +67,7 @@
       setStored(cfg.storageKey, collapsed);
     }
 
-    header.addEventListener('click', function () {
-      toggle();
-    });
+    header.addEventListener('click', toggle);
 
     header.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') {
