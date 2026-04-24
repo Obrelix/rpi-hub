@@ -76,7 +76,8 @@ Append the following to the end of `public/css/style.css`:
 
 .widget-summary {
   display: none;
-  padding: 6px 10px;
+  padding: 6px 8px;
+  margin-top: 8px;
   background: var(--bg-primary);
   border-radius: 4px;
   font-size: 13px;
@@ -98,7 +99,7 @@ Append the following to the end of `public/css/style.css`:
 
 .radio-widget.collapsed .radio-header,
 .signboard-widget.collapsed .signboard-header {
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 .radio-widget.collapsed,
