@@ -429,6 +429,110 @@
     URL.revokeObjectURL(a.href);
   });
 
+  // ── RSS Import Modal ───────────────────────────────────────────
+  var rssModal     = document.getElementById('rssImportModal');
+  var rssClose     = document.getElementById('rssClose');
+  var rssFeedUrl   = document.getElementById('rssFeedUrl');
+  var rssFetchBtn  = document.getElementById('rssFetchBtn');
+  var rssStatus    = document.getElementById('rssStatus');
+  var rssResult    = document.getElementById('rssResult');
+  var rssShowName  = document.getElementById('rssShowName');
+  var rssEpisodes  = document.getElementById('rssEpisodes');
+  var rssSelectAll = document.getElementById('rssSelectAll');
+  var rssAddBtn    = document.getElementById('rssAddSelected');
+
+  var rssCurrent = { show: '', episodes: [] };
+
+  function openRssModal() {
+    rssStatus.textContent = '';
+    rssResult.hidden = true;
+    rssFeedUrl.value = '';
+    rssEpisodes.innerHTML = '';
+    rssCurrent = { show: '', episodes: [] };
+    rssModal.hidden = false;
+    rssFeedUrl.focus();
+  }
+
+  function closeRssModal() {
+    rssModal.hidden = true;
+  }
+
+  importRssBtn.addEventListener('click', openRssModal);
+  rssClose.addEventListener('click', closeRssModal);
+  rssModal.addEventListener('click', function (e) {
+    if (e.target === rssModal) closeRssModal();
+  });
+
+  rssFetchBtn.addEventListener('click', function () {
+    var url = rssFeedUrl.value.trim();
+    if (!url) { rssStatus.textContent = 'Enter a feed URL.'; return; }
+    rssStatus.textContent = 'Fetching\u2026';
+    rssResult.hidden = true;
+
+    fetch('/podcasts/rss-preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ feedUrl: url }),
+    })
+      .then(function (r) {
+        return r.json().then(function (body) { return { status: r.status, body: body }; });
+      })
+      .then(function (res) {
+        if (res.status !== 200) {
+          rssStatus.textContent = 'Error: ' + (res.body && res.body.error || 'request failed');
+          return;
+        }
+        rssCurrent = { show: res.body.show || '', episodes: res.body.episodes || [] };
+        rssStatus.textContent = rssCurrent.episodes.length + ' episode(s) found.';
+        rssShowName.textContent = rssCurrent.show || '(unnamed feed)';
+        rssEpisodes.innerHTML = '';
+        rssCurrent.episodes.forEach(function (ep, i) {
+          var li = document.createElement('li');
+          li.innerHTML =
+            '<label>' +
+              '<input type="checkbox" data-index="' + i + '">' +
+              '<span class="rss-ep-title">' + escapeHtml(ep.title) + '</span>' +
+              '<span class="rss-ep-meta">' +
+                (ep.pubDate ? escapeHtml(ep.pubDate) : '') +
+                (ep.duration ? ' \u00B7 ' + fmtTime(ep.duration) : '') +
+              '</span>' +
+            '</label>';
+          rssEpisodes.appendChild(li);
+        });
+        rssResult.hidden = false;
+      })
+      .catch(function (err) {
+        rssStatus.textContent = 'Network error: ' + err.message;
+      });
+  });
+
+  rssSelectAll.addEventListener('click', function () {
+    var cbs = rssEpisodes.querySelectorAll('input[type="checkbox"]');
+    var allChecked = Array.prototype.every.call(cbs, function (cb) { return cb.checked; });
+    cbs.forEach(function (cb) { cb.checked = !allChecked; });
+  });
+
+  rssAddBtn.addEventListener('click', function () {
+    var cbs = rssEpisodes.querySelectorAll('input[type="checkbox"]:checked');
+    if (cbs.length === 0) { rssStatus.textContent = 'Select at least one episode.'; return; }
+    var added = 0;
+    cbs.forEach(function (cb) {
+      var i = parseInt(cb.dataset.index, 10);
+      var ep = rssCurrent.episodes[i];
+      if (!ep) return;
+      playlist.push({
+        name: ep.title || '(untitled)',
+        url: ep.url,
+        duration: ep.duration == null ? null : ep.duration,
+        show: rssCurrent.show || '',
+      });
+      added++;
+    });
+    renderTable();
+    showToast('Added ' + added + ' episode(s) from RSS', 'success');
+    closeRssModal();
+  });
+
   // ── Init ───────────────────────────────────────────────────────
   updateNowPlayingBar();
   renderTable();
