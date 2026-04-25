@@ -19,6 +19,11 @@
       root: '#signboard-widget',
       header: '.signboard-header',
       storageKey: 'widget-collapsed:signboard'
+    },
+    {
+      root: '#podcast-widget',
+      header: '.podcast-header',
+      storageKey: 'widget-collapsed:podcast'
     }
   ];
 
