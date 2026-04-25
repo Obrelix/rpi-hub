@@ -379,6 +379,56 @@
     tbody.querySelectorAll('.drag-over').forEach(function (el) { el.classList.remove('drag-over'); });
   }
 
+  // ── CSV Import ─────────────────────────────────────────────────
+  importInput.addEventListener('change', function () {
+    var file = importInput.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var lines = e.target.result.split(/\r?\n/);
+      var imported = 0;
+      lines.forEach(function (line) {
+        line = line.trim();
+        if (!line) return;
+        var parts = line.split('\t');
+        if (parts.length >= 2 && parts[0] && parts[1]) {
+          var durRaw = (parts[3] || '').trim();
+          var dur = /^\d+$/.test(durRaw) ? parseInt(durRaw, 10) : null;
+          playlist.push({
+            name: parts[0].trim(),
+            url: parts[1].trim(),
+            show: (parts[2] || '').trim(),
+            duration: dur,
+          });
+          imported++;
+        }
+      });
+      if (imported > 0) {
+        renderTable();
+        showToast('Imported ' + imported + ' episode(s)', 'success');
+      } else {
+        showToast('No valid episodes found in file', 'warning');
+      }
+      importInput.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  // ── CSV Export ─────────────────────────────────────────────────
+  exportBtn.addEventListener('click', function () {
+    var csv = playlist.map(function (ep) {
+      return [ep.name, ep.url, ep.show || '', ep.duration == null ? '' : ep.duration].join('\t');
+    }).join('\n');
+
+    var blob = new Blob([csv], { type: 'text/tab-separated-values' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'podcasts.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
   // ── Init ───────────────────────────────────────────────────────
   updateNowPlayingBar();
   renderTable();
