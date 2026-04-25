@@ -150,7 +150,7 @@
   });
 
   socket.on('podcast:now-playing', function (data) {
-    nowPlaying = data || nowPlaying;
+    nowPlaying = Object.assign({}, nowPlaying, data || {});
     if (nowPlaying.duration) positionInfo.duration = nowPlaying.duration;
     if (nowPlaying.position != null) positionInfo.position = nowPlaying.position;
     updateNowPlayingBar();

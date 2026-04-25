@@ -1564,12 +1564,14 @@ a:hover {
 }
 
 .radio-widget:not(.collapsed) .widget-collapse-toggle,
-.signboard-widget:not(.collapsed) .widget-collapse-toggle {
+.signboard-widget:not(.collapsed) .widget-collapse-toggle,
+.podcast-widget:not(.collapsed) .widget-collapse-toggle {
   transform: rotate(0deg);
 }
 
 .radio-widget.collapsed .widget-collapse-toggle,
-.signboard-widget.collapsed .widget-collapse-toggle {
+.signboard-widget.collapsed .widget-collapse-toggle,
+.podcast-widget.collapsed .widget-collapse-toggle {
   transform: rotate(-90deg);
 }
 
@@ -1587,28 +1589,33 @@ a:hover {
 }
 
 .radio-widget.collapsed .widget-summary,
-.signboard-widget.collapsed .widget-summary {
+.signboard-widget.collapsed .widget-summary,
+.podcast-widget.collapsed .widget-summary {
   display: block;
 }
 
 .radio-widget.collapsed .widget-body,
-.signboard-widget.collapsed .widget-body {
+.signboard-widget.collapsed .widget-body,
+.podcast-widget.collapsed .widget-body {
   display: none;
 }
 
 .radio-widget.collapsed .radio-header,
-.signboard-widget.collapsed .signboard-header {
+.signboard-widget.collapsed .signboard-header,
+.podcast-widget.collapsed .podcast-header {
   margin-bottom: 0;
 }
 
 .radio-widget.collapsed,
-.signboard-widget.collapsed {
+.signboard-widget.collapsed,
+.podcast-widget.collapsed {
   margin-bottom: 12px;
 }
 
 /* Keep the collapse toggle active even when the service is offline */
 .radio-widget.radio-offline .radio-header,
-.signboard-widget.signboard-offline .signboard-header {
+.signboard-widget.signboard-offline .signboard-header,
+.podcast-widget.podcast-offline .podcast-header {
   pointer-events: auto;
 }
 
@@ -1620,7 +1627,10 @@ a:hover {
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
 }
-.podcast-widget.podcast-offline { opacity: 0.75; }
+.podcast-widget.podcast-offline {
+  opacity: 0.75;
+  pointer-events: none;
+}
 .podcast-header {
   display: flex;
   align-items: center;
