@@ -13,6 +13,7 @@
   var nowPlaying = { episode_name: '', show: '', duration: 0, position: 0 };
   var playlist = [];
   var positionInfo = { position: 0, duration: 0 };
+  var isAdjustingVolume = false;
 
   var statusBadge    = widget.querySelector('.podcast-status-badge');
   var showName       = widget.querySelector('.podcast-show-name');
@@ -47,8 +48,10 @@
       statusBadge.className = 'podcast-status-badge ' + (podcastState.is_playing ? 'running' : 'stopped');
     }
     playPauseBtn.textContent = podcastState.is_playing ? '\u23F8' : '\u25B6';
-    volumeSlider.value = podcastState.volume;
-    volumeLabel.textContent = podcastState.volume + '%';
+    if (!isAdjustingVolume) {
+      volumeSlider.value = podcastState.volume;
+      volumeLabel.textContent = podcastState.volume + '%';
+    }
     if (podcastState.episode_index !== null && podcastState.episode_index !== undefined) {
       episodeSelect.value = podcastState.episode_index;
     }
@@ -100,12 +103,12 @@
 
   // Socket.io listeners
   socket.on('podcast:status', function (data) {
-    podcastState = data || podcastState;
+    podcastState = Object.assign({}, podcastState, data || {});
     updateStatus();
   });
 
   socket.on('podcast:now-playing', function (data) {
-    nowPlaying = data || nowPlaying;
+    nowPlaying = Object.assign({}, nowPlaying, data || {});
     updateNowPlaying();
   });
 
@@ -129,10 +132,12 @@
 
   var volumeTimeout;
   volumeSlider.addEventListener('input', function () {
+    isAdjustingVolume = true;
     volumeLabel.textContent = volumeSlider.value + '%';
     clearTimeout(volumeTimeout);
     volumeTimeout = setTimeout(function () {
       socket.emit('podcast:volume', { volume: parseInt(volumeSlider.value, 10) });
+      isAdjustingVolume = false;
     }, 100);
   });
 
