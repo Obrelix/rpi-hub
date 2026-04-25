@@ -1611,3 +1611,189 @@ a:hover {
 .signboard-widget.signboard-offline .signboard-header {
   pointer-events: auto;
 }
+
+/* ── Podcast Widget ─────────────────────────────────────────────── */
+.podcast-widget {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+.podcast-widget.podcast-offline { opacity: 0.75; }
+.podcast-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+.podcast-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  flex: 1;
+}
+.podcast-status-badge {
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.podcast-status-badge.running { background: var(--success); color: #fff; }
+.podcast-status-badge.stopped { background: var(--bg-primary); color: var(--text-muted); border: 1px solid var(--border-color); }
+.podcast-now-playing { margin: 0.5rem 0; }
+.podcast-show-name { font-weight: 600; }
+.podcast-episode-name { font-size: 0.9rem; color: var(--text-muted); }
+.podcast-position { font-size: 0.8rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.podcast-transport {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.podcast-transport button {
+  flex: 1;
+  padding: 0.4rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.podcast-transport button:hover { background: var(--bg-secondary); filter: brightness(1.25); }
+.podcast-volume-row,
+.podcast-selectors {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.podcast-volume-row label,
+.podcast-selectors label {
+  min-width: 64px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.podcast-volume { flex: 1; }
+.podcast-volume-label {
+  min-width: 44px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.podcast-episode-row { flex: 1; display: flex; }
+.podcast-episode-select {
+  flex: 1;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+}
+
+/* ── Podcast Page — Now-Playing Bar extension ───────────────────── */
+.podcast-now-playing .np-seek {
+  flex: 2;
+  display: flex;
+  align-items: center;
+}
+.seek-slider input[type="range"] {
+  width: 100%;
+}
+.seek-slider input[type="range"]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── RSS Import Modal ───────────────────────────────────────────── */
+.rss-import-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.rss-import-modal[hidden] { display: none; }
+.rss-import-inner {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: min(640px, 100%);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.rss-import-header {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.rss-import-header h3 {
+  margin: 0;
+  flex: 1;
+  font-size: 1rem;
+}
+.rss-close {
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+}
+.rss-close:hover { color: var(--text-primary); }
+.rss-input-row {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+.rss-input-row input[type="url"] {
+  flex: 1;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+}
+.rss-status {
+  padding: 0 1rem 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  min-height: 1.2rem;
+}
+.rss-result {
+  padding: 0 1rem 1rem;
+  overflow-y: auto;
+}
+.rss-result h4 {
+  margin: 0.25rem 0 0.5rem;
+}
+.rss-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.rss-episodes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+.rss-episodes li {
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.rss-episodes li:last-child { border-bottom: none; }
+.rss-episodes label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.rss-ep-title { flex: 1; }
+.rss-ep-meta { color: var(--text-muted); font-size: 0.8rem; }
