@@ -16,6 +16,7 @@
   var positionInfo = { position: 0, duration: 0 };
   var hasChanges = false;
   var isSeeking = false;
+  var isAdjustingVolume = false;
 
   // ── DOM refs ───────────────────────────────────────────────────
   var tbody          = document.getElementById('episodeBody');
@@ -116,8 +117,10 @@
     }
     pcPlayPause.textContent = podcastState.is_playing ? '\u23F8' : '\u25B6';
     pcPlayPause.classList.toggle('playing', podcastState.is_playing);
-    pcVolume.value = podcastState.volume;
-    pcVolumeVal.textContent = podcastState.volume + '%';
+    if (!isAdjustingVolume) {
+      pcVolume.value = podcastState.volume;
+      pcVolumeVal.textContent = podcastState.volume + '%';
+    }
     pcShow.textContent = nowPlaying.show || 'No episode';
     pcEpisode.textContent = nowPlaying.episode_name || '';
     updateSeekUi();
@@ -141,7 +144,7 @@
 
   // ── Socket.io listeners ────────────────────────────────────────
   socket.on('podcast:status', function (data) {
-    podcastState = data || podcastState;
+    podcastState = Object.assign({}, podcastState, data || {});
     updateNowPlayingBar();
     renderTable();
   });
@@ -169,6 +172,74 @@
     positionInfo = { position: Number(data.position) || 0, duration: Number(data.duration) || 0 };
     updateSeekUi();
   });
+
+  // ── Now Playing Bar controls ───────────────────────────────────
+  pcPlayPause.addEventListener('click', function () {
+    if (!podcastState.connected) { showToast('Podcast service is offline', 'warning'); return; }
+    socket.emit(podcastState.is_playing ? 'podcast:pause' : 'podcast:play', {});
+  });
+  pcPrev.addEventListener('click', function () {
+    if (!podcastState.connected) { showToast('Podcast service is offline', 'warning'); return; }
+    socket.emit('podcast:prev', {});
+  });
+  pcNext.addEventListener('click', function () {
+    if (!podcastState.connected) { showToast('Podcast service is offline', 'warning'); return; }
+    socket.emit('podcast:next', {});
+  });
+
+  var volumeTimeout;
+  pcVolume.addEventListener('input', function () {
+    isAdjustingVolume = true;
+    pcVolumeVal.textContent = pcVolume.value + '%';
+    clearTimeout(volumeTimeout);
+    volumeTimeout = setTimeout(function () {
+      socket.emit('podcast:volume', { volume: parseInt(pcVolume.value, 10) });
+      isAdjustingVolume = false;
+    }, 100);
+  });
+
+  // ── Seek slider ────────────────────────────────────────────────
+  pcSeek.addEventListener('mousedown', function () { isSeeking = true; });
+  pcSeek.addEventListener('touchstart', function () { isSeeking = true; });
+  pcSeek.addEventListener('input', function () {
+    pcPos.textContent = fmtTime(parseInt(pcSeek.value, 10));
+  });
+  pcSeek.addEventListener('change', function () {
+    if (!podcastState.connected) { isSeeking = false; return; }
+    var pos = parseInt(pcSeek.value, 10);
+    if (isFinite(pos) && pos >= 0) {
+      socket.emit('podcast:seek', { position: pos });
+      positionInfo.position = pos;
+    }
+    isSeeking = false;
+  });
+
+  // ── Play button per row ────────────────────────────────────────
+  tbody.addEventListener('click', function (e) {
+    var btn = e.target.closest('.station-play-btn');
+    if (!btn) return;
+    if (!podcastState.connected) { showToast('Podcast service is offline', 'warning'); return; }
+
+    var tr = btn.closest('tr');
+    var idx = parseInt(tr.dataset.index, 10);
+
+    if (hasChanges) {
+      doSave(function () {
+        socket.emit('podcast:play', { index: idx });
+      });
+    } else {
+      socket.emit('podcast:play', { index: idx });
+    }
+  });
+
+  function doSave(callback) {
+    if (!podcastState.connected) { showToast('Podcast service is offline', 'warning'); return; }
+    socket.emit('podcast:playlist-update', playlist);
+    showToast('Playlist saved', 'success');
+    if (callback) {
+      socket.once('podcast:playlist', function () { callback(); });
+    }
+  }
 
   // ── Init ───────────────────────────────────────────────────────
   updateNowPlayingBar();
