@@ -148,6 +148,41 @@
   </div>
 </div>
 
+<!-- ── Podcast Control Widget ────────────────────────────────────── -->
+<div class="podcast-widget" id="podcast-widget">
+  <div class="podcast-header" role="button" tabindex="0" aria-expanded="false">
+    <h3>RPi Podcast</h3>
+    <span class="podcast-status-badge stopped">Offline</span>
+    <button class="widget-collapse-toggle" type="button" aria-label="Toggle widget" aria-expanded="false">&#x25BE;</button>
+  </div>
+  <div class="widget-summary"></div>
+  <div class="widget-body">
+    <div class="podcast-now-playing">
+      <div class="podcast-show-name">No episode</div>
+      <div class="podcast-episode-name"></div>
+      <div class="podcast-position"></div>
+    </div>
+    <div class="podcast-transport">
+      <button class="podcast-prev" title="Previous">&#x23EE;</button>
+      <button class="podcast-play-pause" title="Play/Pause">&#x25B6;</button>
+      <button class="podcast-next" title="Next">&#x23ED;</button>
+    </div>
+    <div class="podcast-volume-row">
+      <label>Volume</label>
+      <input type="range" class="podcast-volume" min="0" max="150" value="70">
+      <span class="podcast-volume-label">70%</span>
+    </div>
+    <div class="podcast-selectors">
+      <div>
+        <label>Episode</label>
+        <div class="podcast-episode-row">
+          <select class="podcast-episode-select"></select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── Services Grid ─────────────────────────────────────────────── -->
 <div class="section-heading">Services</div>
 
@@ -206,3 +241,4 @@
 <script src="/js/widget-collapse.js"></script>
 <script src="/js/radio-widget.js"></script>
 <script src="/js/signboard-widget.js"></script>
+<script src="/js/podcast-widget.js"></script>
