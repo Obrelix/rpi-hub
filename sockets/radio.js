@@ -62,7 +62,8 @@ function setupRadioSocket(io) {
     socket.on('disconnect', () => {
       if (radioSocketId === socket.id) {
         radioSocketId = null;
-        io.emit('radio:status', { is_playing: false, connected: false });
+        cachedStatus = { is_playing: false, connected: false };
+        io.emit('radio:status', cachedStatus);
         console.log('rpi-radio disconnected');
       }
     });
