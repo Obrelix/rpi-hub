@@ -122,14 +122,14 @@ a:hover {
 .main {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem 1.5rem;
 }
 
 .page-title {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 /* --- Stats Bar ------------------------------------- */
@@ -137,14 +137,14 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .stat-card {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1.25rem;
   box-shadow: var(--shadow);
 }
 
@@ -162,7 +162,7 @@ a:hover {
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.2;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.375rem;
 }
 
 .stat-bar {
@@ -244,7 +244,10 @@ a:hover {
   color: var(--text-primary);
 }
 
-.status-badge {
+.status-badge,
+.radio-status-badge,
+.signboard-status-badge,
+.podcast-status-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -258,7 +261,10 @@ a:hover {
   flex-shrink: 0;
 }
 
-.status-badge::before {
+.status-badge::before,
+.radio-status-badge::before,
+.signboard-status-badge::before,
+.podcast-status-badge::before {
   content: '';
   display: inline-block;
   width: 7px;
@@ -267,19 +273,28 @@ a:hover {
   background-color: currentColor;
 }
 
-.status-badge.running {
+.status-badge.running,
+.radio-status-badge.running,
+.signboard-status-badge.running,
+.podcast-status-badge.running {
   background-color: rgba(63, 185, 80, 0.15);
   color: var(--success);
   border: 1px solid rgba(63, 185, 80, 0.3);
 }
 
-.status-badge.stopped {
+.status-badge.stopped,
+.radio-status-badge.stopped,
+.signboard-status-badge.stopped,
+.podcast-status-badge.stopped {
   background-color: rgba(139, 148, 158, 0.1);
   color: var(--text-muted);
   border: 1px solid rgba(139, 148, 158, 0.2);
 }
 
-.status-badge.failed {
+.status-badge.failed,
+.radio-status-badge.failed,
+.signboard-status-badge.failed,
+.podcast-status-badge.failed {
   background-color: rgba(248, 81, 73, 0.15);
   color: var(--danger);
   border: 1px solid rgba(248, 81, 73, 0.3);
@@ -593,8 +608,8 @@ a:hover {
   font-size: 1rem;
   font-weight: 600;
   color: var(--text-secondary);
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.375rem;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -748,17 +763,23 @@ a:hover {
   pointer-events: none;
 }
 
-.radio-header {
+.radio-header,
+.signboard-header,
+.podcast-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
 
-.radio-header h3 {
+.radio-header h3,
+.signboard-header h3,
+.podcast-header h3 {
   margin: 0;
   font-size: 16px;
   color: var(--text-primary);
+  min-width: 120px;
+  flex: none;
 }
 
 .radio-now-playing {
@@ -1298,39 +1319,6 @@ a:hover {
   pointer-events: none;
 }
 
-.signboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.signboard-header h3 {
-  margin: 0;
-  font-size: 16px;
-  color: var(--text-primary);
-}
-
-.signboard-status-badge {
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.signboard-status-badge.running {
-  color: var(--success);
-  border-color: var(--success);
-}
-
-.signboard-status-badge.stopped {
-  color: var(--text-muted);
-}
-
 .signboard-current {
   font-size: 12px;
   color: var(--text-secondary);
@@ -1542,7 +1530,8 @@ a:hover {
 /* ── Collapsible widget support (Radio + Signboard) ─────────────── */
 
 .radio-header,
-.signboard-header {
+.signboard-header,
+.podcast-header {
   cursor: pointer;
   user-select: none;
 }
@@ -1577,10 +1566,9 @@ a:hover {
 
 .widget-summary {
   display: none;
-  padding: 6px 8px;
-  margin-top: 8px;
-  background: var(--bg-primary);
-  border-radius: 4px;
+  flex: 1;
+  min-width: 0;
+  margin: 0 12px;
   font-size: 13px;
   color: var(--text-secondary);
   white-space: nowrap;
@@ -1609,7 +1597,8 @@ a:hover {
 .radio-widget.collapsed,
 .signboard-widget.collapsed,
 .podcast-widget.collapsed {
-  margin-bottom: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
 }
 
 /* Keep the collapse toggle active even when the service is offline */
@@ -1631,25 +1620,6 @@ a:hover {
   opacity: 0.75;
   pointer-events: none;
 }
-.podcast-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  cursor: pointer;
-}
-.podcast-header h3 {
-  margin: 0;
-  font-size: 1rem;
-  flex: 1;
-}
-.podcast-status-badge {
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-.podcast-status-badge.running { background: var(--success); color: #fff; }
-.podcast-status-badge.stopped { background: var(--bg-primary); color: var(--text-muted); border: 1px solid var(--border-color); }
 .podcast-now-playing { margin: 0.5rem 0; }
 .podcast-show-name { font-weight: 600; }
 .podcast-episode-name { font-size: 0.9rem; color: var(--text-muted); }
