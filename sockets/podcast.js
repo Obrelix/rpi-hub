@@ -106,7 +106,8 @@ function setupPodcastSocket(io) {
     socket.on('disconnect', () => {
       if (podcastSocketId === socket.id) {
         podcastSocketId = null;
-        io.emit('podcast:status', { is_playing: false, connected: false });
+        cachedStatus = { is_playing: false, connected: false };
+        io.emit('podcast:status', cachedStatus);
         console.log('rpi-podcast disconnected');
       }
     });
