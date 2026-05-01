@@ -261,6 +261,12 @@ a:hover {
   flex-shrink: 0;
 }
 
+.radio-status-badge,
+.signboard-status-badge,
+.podcast-status-badge {
+  margin-left: auto;
+}
+
 .status-badge::before,
 .radio-status-badge::before,
 .signboard-status-badge::before,
